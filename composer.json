@@ -34,7 +34,9 @@
         "doctrine/annotations": "^1.13",
         "doctrine/doctrine-bundle": "^2.4",
         "doctrine/doctrine-migrations-bundle": "^3.1",
-        "friendsofphp/php-cs-fixer": "^3.0"
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "symfony/yaml": "^5.3",
+        "symfony/css-selector": "^5.3"
     },
     "license": "GPL-3.0-or-later",
     "autoload": {
@@ -44,7 +46,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Onadrog\\ImageConverterBundle\\Tests\\": "tests"
+            "Onadrog\\ImageConverterBundle\\Tests\\": "tests",
+            "Onadrog\\ImageConverterBundle\\Mock\\": "tests/Mock"
         }
     },
     "authors": [{

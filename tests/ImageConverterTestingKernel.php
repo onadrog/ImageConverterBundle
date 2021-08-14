@@ -26,7 +26,9 @@ class ImageConverterTestingKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(static function (ContainerBuilder $container): void {
+
+        $loader->load(__DIR__ . "/Mock/config/config.yaml");
+        /*  $loader->load(static function (ContainerBuilder $container): void {
             $container->loadFromExtension('framework', [
                 'secret' => $_SERVER['APP_SECRET'],
                 'router' => [
@@ -36,6 +38,11 @@ class ImageConverterTestingKernel extends Kernel
                 ],
                 'test' => true,
             ]);
-        });
+        }); */
+    }
+
+    public function getProjectDir()
+    {
+        return dirname(__DIR__, 1);
     }
 }

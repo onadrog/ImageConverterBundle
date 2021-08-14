@@ -7,7 +7,6 @@
         <defaults autoconfigure="true"/>
         <service id="image_converter.type" class="Onadrog\ImageConverterBundle\Type\ImageConverterType">
             <tag name="form.twig"/>
-            <argument >%image_converter%</argument>
             <argument type="service" id="image_converter.subscriber"/>
         </service>
     </services>

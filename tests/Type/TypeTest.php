@@ -33,7 +33,6 @@ class TypeTest extends TypeTestCase
     protected function getExtensions()
     {
         $type = new ImageConverterType(
-            ['max_size' => 80],
             $this->subscriber
         );
 

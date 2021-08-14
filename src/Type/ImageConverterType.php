@@ -11,7 +11,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ImageConverterType extends AbstractType
 {
     public function __construct(
-        private array $config,
         private ImageConverterSubscriber $imageConverterSubscriber
     ) {
     }
@@ -35,15 +34,6 @@ class ImageConverterType extends AbstractType
             'mapped' => false,
             'required' => $options['required'] ?? true,
             'multiple' => false,
-           /*  'constraints' => [
-                new File([
-                    'maxSize' => $this->config['max_size'] . 'k',
-                    'mimeTypes' => [
-                        'image/*'
-                    ],
-                    'mimeTypesMessage' => 'Please insert an image.'
-                ])
-            ], */
         ])->addEventSubscriber($this->imageConverterSubscriber);
     }
 }

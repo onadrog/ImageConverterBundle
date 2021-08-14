@@ -15,3 +15,7 @@ phpstan:
 .PHONY: fixer
 fixer:
 	vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php
+
+.PHONY: githubTests
+githubTests:
+	$(dcktestrun) phptest vendor/bin/phpunit -c .

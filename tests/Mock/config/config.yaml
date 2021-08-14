@@ -1,0 +1,22 @@
+framework:
+  secret: "secret"
+  router:
+    resource: "%kernel.project_dir%/tests/Mock/config/routes.yaml"
+    utf8: false
+  test: true
+
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+  Onadrog\ImageConverterBundle\Mock\Controller\:
+    resource: "../Controller/"
+
+twig:
+  paths: ["%kernel.project_dir%/tests/Mock/templates"]
+
+image_converter:
+  media_uploads_path: "%kernel.project_dir%/public/uploads/media/"
+  namer: "uuid" # Possible values : "default", "uuid", "mixed"
+  quality: 80
+  entity: App\Entity\Media

@@ -21,4 +21,4 @@ jobs:
       - name: Run phpstan
         run: make phpstan
       - name: Run tests
-        run: make tests
+        run: make githubTests

@@ -12,18 +12,9 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder('image_converter');
         $rootNode = $treeBuilder->getRootNode();
-        $this->addTypeConfiguration($rootNode);
         $this->addSubscriberConfiguration($rootNode);
 
         return $treeBuilder;
-    }
-
-    public function addTypeConfiguration(NodeDefinition $node): void
-    {
-        $node
-            ->children()
-                ->integerNode('max_size')->defaultValue(2048)->end()
-            ->end();
     }
 
     public function addSubscriberConfiguration(NodeDefinition $node): void

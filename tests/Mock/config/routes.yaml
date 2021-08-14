@@ -1,0 +1,3 @@
+index:
+  path: /
+  controller: Onadrog\ImageConverterBundle\Mock\Controller\DefaultController::index
