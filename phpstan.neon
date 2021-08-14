@@ -1,0 +1,17 @@
+parameters:
+	level: 6
+	paths:
+		- .
+	excludePaths:
+		- vendor
+		- src/Entity
+		- test
+		- var
+		- bin
+	checkGenericClassInNonGenericObjectType: false
+	checkMissingIterableValueType: false
+
+includes:
+	- %currentWorkingDirectory%/vendor/phpstan/phpstan-symfony/extension.neon
+	- %currentWorkingDirectory%/vendor/phpstan/phpstan-symfony/rules.neon
+	- phpstan-ignore.neon

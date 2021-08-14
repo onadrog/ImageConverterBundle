@@ -1,0 +1,7 @@
+coverage
+vendor
+var
+composer.lock
+.phpunit.result.cache
+tools/php-cs-fixer/vendor
+.php-cs-fixer.cache
