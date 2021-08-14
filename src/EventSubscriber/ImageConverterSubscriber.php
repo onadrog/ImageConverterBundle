@@ -33,7 +33,7 @@ class ImageConverterSubscriber implements EventSubscriberInterface
         $imagePath = $image->getPathName();
         $callFunction = $this->imageUtils->createGdImg($image->guessExtension(), $imagePath);
 
-        return \imagewebp($callFunction, $imagePath, $this->config['quality']);
+        return imagewebp($callFunction, $imagePath, $this->config['quality']);
     }
 
     public static function getSubscribedEvents(): array

@@ -1,0 +1,24 @@
+name: dev
+
+on: [pull_request, push]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: get latest
+        uses: actions/checkout@v2
+      - name: install PHP deps
+        uses: shivammathur/setup-php@2.11.0
+        with:
+          php-version: "8.0"
+      - name: install deps
+        run: composer install
+      - name: Build docker
+        run: docker-compose -f docker/docker-compose.yaml build
+      - name: Run fixer
+        run: make fixer
+      - name: Run phpstan
+        run: make phpstan
+      - name: Run tests
+        run: make tests

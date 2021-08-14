@@ -14,4 +14,4 @@ phpstan:
 
 .PHONY: fixer
 fixer:
-	tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php
+	vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php
