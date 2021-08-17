@@ -2,8 +2,8 @@
 
 namespace Onadrog\ImageConverterBundle\Tests\Type;
 
-use Onadrog\ImageConverterBundle\Entity\Media;
 use Onadrog\ImageConverterBundle\EventSubscriber\ImageConverterSubscriber;
+use Onadrog\ImageConverterBundle\Mock\Entity\Entity\Media;
 use Onadrog\ImageConverterBundle\Service\ImageUtils;
 use Onadrog\ImageConverterBundle\Type\ImageConverterType;
 use Symfony\Component\Form\PreloadedExtension;
@@ -50,7 +50,7 @@ class TypeTest extends TypeTestCase
             'image' => new UploadedFile(dirname(__DIR__, 1).'/Mock/images/JPG.jpg', 'JPG'),
         ];
 
-        $form = $this->factory->createNamed('file', ImageConverterType::class, new Media());
+        $form = $this->factory->createNamed('products', ImageConverterType::class, new Media());
         $form->submit($formData);
         $this->isTrue();
     }

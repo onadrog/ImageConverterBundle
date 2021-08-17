@@ -9,7 +9,7 @@ class ImageTwigExtensionTest extends WebTestCase
     public function testExtension(): void
     {
         $client = $this->createClient();
-       $client->request('GET', '/');
+        $client->request('GET', '/');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('picture', '');
     }

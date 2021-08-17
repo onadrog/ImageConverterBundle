@@ -24,7 +24,6 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('media_uploads_path')->defaultValue('%kernel.project_dir%/public/uploads/media')->cannotBeEmpty()->end()
                 ->enumNode('namer')->values(['default', 'uuid', 'mixed'])->defaultValue('defaut')->cannotBeEmpty()->end()
                 ->integerNode('quality')->min(0)->max(100)->defaultValue(80)->end()
-                ->scalarNode('entity')->defaultValue('App\Entity\Media')->end()
             ->end();
     }
 }

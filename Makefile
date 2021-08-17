@@ -1,16 +1,23 @@
 SHELL := /bin/bash
 
+
 dcktestrun := docker-compose -f docker/docker-compose.yaml run --rm
+nodepsdcktestrun := docker-compose -f docker/docker-compose.yaml run --rm --no-deps
+dcktestrdown := docker-compose -f docker/docker-compose.yaml down
 
 
 .PHONY: tests
 tests:
-	rm -rf var
+	$(dcktestrun) phptest tests/bin/console doctrine:database:drop --env=test --force || true
+	$(dcktestrun) phptest tests/bin/console doctrine:database:create --env=test
+	$(dcktestrun) phptest tests/bin/console doctrine:migrations:migrate --env=test latest -n
+#	$(dcktestrun) phptest tests/bin/console doctrine:fixtures:load --env=test -n
 	$(dcktestrun) phptest vendor/bin/phpunit -c . --coverage-html=coverage/
+	$(dcktestrdown)
 
 .PHONY: phpstan
 phpstan:
-	$(dcktestrun) phptest vendor/bin/phpstan analyse -c phpstan.neon --debug --memory-limit=2G
+	$(nodepsdcktestrun) phptest vendor/bin/phpstan analyse -c phpstan.neon --debug --memory-limit=2G
 
 .PHONY: fixer
 fixer:
@@ -18,4 +25,4 @@ fixer:
 
 .PHONY: githubTests
 githubTests:
-	$(dcktestrun) phptest vendor/bin/phpunit -c .
+	$(nodepsdcktestrun) phptest vendor/bin/phpunit -c .

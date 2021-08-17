@@ -2,7 +2,7 @@
 
 namespace Onadrog\ImageConverterBundle\Service;
 
-use Doctrine\ORM\Mapping\Driver\AttributeReader;
+use Doctrine\Common\Annotations\AnnotationReader;
 use GdImage;
 use Onadrog\ImageConverterBundle\Mapping\Attribute\ImageUpload;
 use Onadrog\ImageConverterBundle\Mapping\Attribute\ImageUploadProperties;
@@ -56,7 +56,8 @@ class ImageUtils
         // ImageUpload Attribute not found on Entity
         if (empty($attribute)) {
             $prop = $Refclass->getProperty($property);
-            $reader = new AttributeReader();
+            $reader = new AnnotationReader();
+            //$reader = new AttributeReader(); <-- Waiting for PR to be merged https://github.com/symfony/maker-bundle/pull/920
             $annotation = $reader->getPropertyAnnotations($prop);
             foreach ($annotation as $anno) {
                 if (isset($anno->targetEntity)) {

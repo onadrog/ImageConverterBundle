@@ -3,10 +3,10 @@
 namespace Onadrog\ImageConverterBundle\Tests\Unit;
 
 use GdImage;
-use Onadrog\ImageConverterBundle\Entity\DummyWithAttribute;
-use Onadrog\ImageConverterBundle\Entity\Media;
-use Onadrog\ImageConverterBundle\Entity\Product;
 use Onadrog\ImageConverterBundle\Mapping\Attribute\ImageUpload;
+use Onadrog\ImageConverterBundle\Mock\Entity\Entity\DummyWithAttribute;
+use Onadrog\ImageConverterBundle\Mock\Entity\Entity\Media;
+use Onadrog\ImageConverterBundle\Mock\Entity\Entity\Product;
 use Onadrog\ImageConverterBundle\Service\ImageUtils;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -27,7 +27,7 @@ class UtilsTest extends TestCase
      */
     public function testRelationalAttribute(): void
     {
-        $array = ImageUtils::guessMappedClass(new Product(), 'image');
+        $array = ImageUtils::guessMappedClass(new Product(), 'media');
         $this->assertIsArray($array);
         $this->assertArrayHasKey('slug', $array);
         $this->assertInstanceOf(ReflectionClass::class, $array['entity']);
@@ -37,11 +37,11 @@ class UtilsTest extends TestCase
     /**
      * @covers \Onadrog\ImageConverterBundle\Service\ImageUtils::guessMappedClass
      * @covers \Onadrog\ImageConverterBundle\Service\ImageUtils::readClassAttribute
-     * Test Entity Media Attribute ImageUpload
+     * Test Entity Media as Attribute ImageUpload
      */
     public function testAttribute(): void
     {
-        $array = ImageUtils::guessMappedClass(new Media(), 'file');
+        $array = ImageUtils::guessMappedClass(new Media(), 'products');
         $classAttributes = $array['entity']->getAttributes()[0]->getName();
         $this->assertInstanceOf(ReflectionClass::class, $array['entity']);
         $this->assertEquals(ImageUpload::class, $classAttributes);
@@ -56,7 +56,7 @@ class UtilsTest extends TestCase
     public function testRuntimeExecption(): void
     {
         $this->expectException(RuntimeException::class);
-        ImageUtils::guessMappedClass(new Product(), 'yay');
+        ImageUtils::guessMappedClass(new Product(), 'dummy');
     }
 
     /**

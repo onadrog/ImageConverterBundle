@@ -11,12 +11,38 @@ services:
     autoconfigure: true
   Onadrog\ImageConverterBundle\Mock\Controller\:
     resource: "../Controller/"
+  Onadrog\ImageConverterBundle\Mock\Entity\:
+    resource: "%kernel.project_dir%/tests/Mock/Entity/"
 
 twig:
   paths: ["%kernel.project_dir%/tests/Mock/templates"]
+
+doctrine:
+  dbal:
+    url: "mysql://root:@db/mydatabase?serverVersion=5.7"
+  orm:
+    auto_generate_proxy_classes: true
+    naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+    auto_mapping: true
+    mappings:
+      Onadrog\ImageConverterBundle\Mock\Entity:
+        is_bundle: false
+        type: annotation
+        dir: "%kernel.project_dir%/tests/Mock/Entity"
+        prefix: 'Onadrog\ImageConverterBundle\Mock\Entity\'
+        alias: Onadrog
+
+doctrine_migrations:
+  migrations_paths:
+    "DoctrineMigrations": "%kernel.project_dir%/tests/Mock/migrations"
+
+maker:
+  # tell MakerBundle that all of your classes lives in an
+  # Acme namespace, instead of the default App
+  # (e.g. Acme\Entity\Article, Acme\Command\MyCommand, etc)
+  root_namespace: 'Onadrog\ImageConverterBundle\Mock\Entity'
 
 image_converter:
   media_uploads_path: "%kernel.project_dir%/public/uploads/media/"
   namer: "uuid" # Possible values : "default", "uuid", "mixed"
   quality: 80
-  entity: App\Entity\Media
