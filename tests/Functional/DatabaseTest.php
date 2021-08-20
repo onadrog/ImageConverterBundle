@@ -5,19 +5,22 @@ namespace Onadrog\ImageConverterBundle\Tests\Functional;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class EventTest extends WebTestCase
+class DatabaseTest extends WebTestCase
 {
-    public function testForm(): void
+    private const UPLOAD_PATH = 'public/uploads/media/';
+
+    public function testSave()
     {
-        $file = new UploadedFile(dirname(__DIR__, 1).'/Mock/images/JPG.jpg', 'JPG');
+        $path = dirname(__DIR__, 1).'/Mock/images/JPG.jpg';
+
+        $file = new UploadedFile($path, 'JPG');
 
         $client = $this->createClient();
         $client->request('POST', '/form/Media');
-        $this->assertResponseIsSuccessful();
         $client->submitForm('Save', [
             'mock[products][image]' => $file,
         ]);
-        $this->assertTrue(true);
-        // $this->assertResponseRedirects('/');
+        $this->assertFileExists(self::UPLOAD_PATH.'JPG.webp');
+        $this->assertResponseRedirects('/');
     }
 }

@@ -87,9 +87,10 @@ class UtilsTest extends TestCase
         foreach ($originalNames as $name) {
             $safeName = $slug->slug($name);
             $res = $utils->namer($name, 'default');
-            $this->assertEquals($safeName, $res);
+            $this->assertEquals($safeName, $res['safeName']);
             $res = $utils->namer($name, 'uuid');
-            $this->assertIsString($res);
+            $this->assertIsArray($res);
+            $this->assertArrayHasKey('slug', $res);
         }
     }
 

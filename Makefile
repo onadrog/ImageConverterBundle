@@ -8,6 +8,7 @@ dcktestrdown := docker-compose -f docker/docker-compose.yaml down
 
 .PHONY: tests
 tests:
+	rm -rf var
 	$(dcktestrun) phptest tests/bin/console doctrine:database:drop --env=test --force || true
 	$(dcktestrun) phptest tests/bin/console doctrine:database:create --env=test
 	$(dcktestrun) phptest tests/bin/console doctrine:migrations:migrate --env=test latest -n

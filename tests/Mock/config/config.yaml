@@ -44,5 +44,5 @@ maker:
 
 image_converter:
   media_uploads_path: "%kernel.project_dir%/public/uploads/media/"
-  namer: "uuid" # Possible values : "default", "uuid", "mixed"
+  namer: "default" # Possible values : "default", "uuid", "mixed"
   quality: 80

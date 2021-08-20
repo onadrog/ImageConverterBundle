@@ -2,28 +2,38 @@
 
 namespace Onadrog\ImageConverterBundle\Mock\Controller;
 
+use Onadrog\ImageConverterBundle\Mock\Entity\Entity\Media;
 use Onadrog\ImageConverterBundle\Mock\Type\MockType;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends AbstractController
 {
-    public function index()
+    public function index(): Response
     {
         return $this->render('index.html.twig');
     }
 
-    public function form(Request $request)
+    public function form(Request $request): Response
     {
-        $refClass = new ReflectionClass("Onadrog\ImageConverterBundle\Mock\Entity\Entity\\".$request->get('entity'));
-        $form = $this->createForm(MockType::class, $refClass->newInstance());
-        $form->handleRequest($request);
-
+        //$medium = new Media();
+        $refClass = new ReflectionClass("Onadrog\ImageConverterBundle\Mock\Entity\Entity\\" . $request->get('entity'));
+        $medium = $refClass->newInstance();
+        $form = $this->createForm(MockType::class, $medium);
+       $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            return $this->redirect('/');
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($medium);
+            $em->flush();
+
+            return $this->redirectToRoute('index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('form.html.twig', ['form' => $form]);
+        return $this->renderForm('form.html.twig', [
+            'medium' => $medium,
+            'form' => $form,
+        ]);
     }
 }

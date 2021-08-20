@@ -25,8 +25,13 @@ class ImageConverterTestingKernel extends Kernel
     public function registerBundles()
     {
         return [
-            new FrameworkBundle(), new ImageConverterBundle(),
-            new TwigBundle(), new DoctrineBundle(), new DoctrineMigrationsBundle(), new DoctrineFixturesBundle(), new MakerBundle(),
+            new FrameworkBundle(),
+            new ImageConverterBundle(),
+            new TwigBundle(),
+            new DoctrineBundle(),
+            new DoctrineMigrationsBundle(),
+            new DoctrineFixturesBundle(),
+            new MakerBundle(),
         ];
     }
 

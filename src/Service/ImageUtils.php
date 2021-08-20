@@ -7,6 +7,7 @@ use GdImage;
 use Onadrog\ImageConverterBundle\Mapping\Attribute\ImageUpload;
 use Onadrog\ImageConverterBundle\Mapping\Attribute\ImageUploadProperties;
 use ReflectionClass;
+use ReflectionProperty;
 use RuntimeException;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\Uid\Uuid;
@@ -24,7 +25,7 @@ class ImageUtils
         if ('jpg' === $extension) {
             return imagecreatefromjpeg($imagePath);
         } else {
-            $img = 'imagecreatefrom'.$extension;
+            $img = 'imagecreatefrom' . $extension;
 
             return $img($imagePath);
         }
@@ -33,16 +34,26 @@ class ImageUtils
     /**
      * Slugify / return choosen 'namer' option.
      */
-    public function namer(string $originalName, string $option): string
+    public function namer(string $originalName, string $option): array
     {
         $slug = new AsciiSlugger();
         $safeName = $slug->slug($originalName);
 
-        return match ($option) {
+        $slug = match ($option) {
             'default' => $safeName,
             'uuid' => (string) Uuid::v6(),
-            'mixed' => str_replace('.', '-', uniqid($safeName.'-', true)),
+            'mixed' => str_replace('.', '-', uniqid($safeName . '-', true)),
         };
+
+        return ['slug' => $slug, 'safeName' => (string) $safeName];
+    }
+
+
+    private static function readProperty(ReflectionProperty $property)
+    {
+        $reader = new AnnotationReader();
+        //$reader = new AttributeReader(); <-- Waiting for PR to be merged https://github.com/symfony/maker-bundle/pull/920
+        return $reader->getPropertyAnnotations($property);
     }
 
     /**
@@ -56,9 +67,10 @@ class ImageUtils
         // ImageUpload Attribute not found on Entity
         if (empty($attribute)) {
             $prop = $Refclass->getProperty($property);
-            $reader = new AnnotationReader();
+            /*  $reader = new AnnotationReader();
             //$reader = new AttributeReader(); <-- Waiting for PR to be merged https://github.com/symfony/maker-bundle/pull/920
-            $annotation = $reader->getPropertyAnnotations($prop);
+            $annotation = $reader->getPropertyAnnotations($prop); */
+            $annotation = self::readProperty($prop);
             foreach ($annotation as $anno) {
                 if (isset($anno->targetEntity)) {
                     $v = $anno->targetEntity;
@@ -101,6 +113,14 @@ class ImageUtils
      */
     public static function readClassAttribute(ReflectionClass $reflectionClass, string $property): array
     {
+        $target = $reflectionClass;
+        $props = self::readProperty($target->getProperty($property));
+        $entity = $target;
+        foreach ($props as $prop) {
+            if (isset($prop->targetEntity)) {
+                $entity = new ReflectionClass($prop->targetEntity);
+            }
+        }
         $reflectionClass->newInstance();
         $file = $reflectionClass->getProperty($property);
         $arguments = $file->getAttributes(ImageUploadProperties::class);
@@ -109,7 +129,7 @@ class ImageUtils
         }
         $argsArray = [
             'property' => $property,
-            'entity' => $reflectionClass,
+            'entity' => $entity,
         ];
         foreach ($arguments as $arg) {
             $entityTargetArray = array_merge($argsArray, $arg->getArguments());

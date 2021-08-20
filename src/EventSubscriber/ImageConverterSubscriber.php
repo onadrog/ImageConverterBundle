@@ -15,31 +15,66 @@ class ImageConverterSubscriber implements EventSubscriberInterface
     ) {
     }
 
-    public function onFormPreSubmit(FormEvent $event): bool
+    public function onFormPreSubmit(FormEvent $event): void
     {
         $upladedInstance = $event->getData();
+        $formParent = $event->getForm()->getParent();
         $image = $upladedInstance['image'];
         if (!$image instanceof UploadedFile) {
-            return false;
+            return;
         }
         $form = $event->getForm();
         $class = $form->getRoot()->getData();
+        $property = $form->getName();
 
-        ImageUtils::guessMappedClass($class, $form->getName());
-        $form = $event->getForm();
+        $data = ImageUtils::guessMappedClass($class, $property);
         $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
-        $this->imageUtils->namer($originalName, $this->config['namer']);
+        $slug = $this->imageUtils->namer($originalName, $this->config['namer']);
+
+        $imagesize = getimagesize($image->getPathName());
+        list($imageWidth, $imageHeight) = $imagesize;
+
+        $dimension = ['height' => $imageHeight, 'width' => $imageWidth];
 
         $imagePath = $image->getPathName();
         $callFunction = $this->imageUtils->createGdImg($image->guessExtension(), $imagePath);
 
-        return imagewebp($callFunction, $imagePath, $this->config['quality']);
+        imagewebp($callFunction, $imagePath, $this->config['quality']);
+        $value = [
+            $data['name'] => $slug['safeName'],
+            $data['slug'] => $slug['slug'],
+            $data['dimension'] => $dimension,
+            $property => $data['entity']->newInstance()
+        ];
+
+        foreach ($value as $k => $v) {
+            $key = is_array($k) ? key($k) : $k;
+            $formParent->add($key);
+            dd($formParent[$key]);
+            if ($key === $formParent[$key]) {
+                $formParent[$key] = $v;
+            }
+            //dump($formParent[$key]);
+            // $upladedInstance[$key] = $v;
+        }
+
+        $event->setData($formParent);
+
+        $image->move($this->config['media_uploads_path'], $slug['slug'] . '.' . $image->guessExtension());
+        imagedestroy($callFunction);
+    }
+
+
+    public function onFormSubmit(FormEvent $event)
+    {
+        dd($event->getForm()->getData());
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
             'form.pre_submit' => 'onFormPreSubmit',
+            'form.submit' => 'onFormSubmit'
         ];
     }
 }

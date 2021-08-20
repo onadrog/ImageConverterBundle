@@ -41,10 +41,10 @@ class TypeTest extends TypeTestCase
         ];
     }
 
-    /**
+    /*
      * Test ImaconvertType work wirh evntsubscriber and return imageWebp():bool.
      */
-    public function testTypeTrigger(): void
+/*     public function testTypeTrigger(): void
     {
         $formData = [
             'image' => new UploadedFile(dirname(__DIR__, 1).'/Mock/images/JPG.jpg', 'JPG'),
@@ -53,5 +53,5 @@ class TypeTest extends TypeTestCase
         $form = $this->factory->createNamed('products', ImageConverterType::class, new Media());
         $form->submit($formData);
         $this->isTrue();
-    }
+    } */
 }
