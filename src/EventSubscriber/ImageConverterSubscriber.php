@@ -18,11 +18,11 @@ class ImageConverterSubscriber implements EventSubscriberInterface
     public function onFormPreSubmit(FormEvent $event): void
     {
         $upladedInstance = $event->getData();
-        $formParent = $event->getForm()->getParent();
         $image = $upladedInstance['image'];
         if (!$image instanceof UploadedFile) {
             return;
         }
+        $formParent = $event->getForm()->getParent();
         $form = $event->getForm();
         $class = $form->getRoot()->getData();
         $property = $form->getName();
@@ -41,33 +41,29 @@ class ImageConverterSubscriber implements EventSubscriberInterface
 
         imagewebp($callFunction, $imagePath, $this->config['quality']);
         $value = [
-            $data['name'] => $slug['safeName'],
+            $data['name'] => $slug['safename'],
             $data['slug'] => $slug['slug'],
             $data['dimension'] => $dimension,
-            $property => $data['entity']->newInstance()
+            $property => $data['entity']->newInstance(),
         ];
 
         foreach ($value as $k => $v) {
             $key = is_array($k) ? key($k) : $k;
             $formParent->add($key);
-            dd($formParent[$key]);
-            if ($key === $formParent[$key]) {
-                $formParent[$key] = $v;
-            }
+            $formParent->get($key)->setData($v);
             //dump($formParent[$key]);
             // $upladedInstance[$key] = $v;
         }
+        //$event->setData($upladedInstance);
+        // dd($event->getForm()->getData());
 
-        $event->setData($formParent);
-
-        $image->move($this->config['media_uploads_path'], $slug['slug'] . '.' . $image->guessExtension());
+        $image->move($this->config['media_uploads_path'], $slug['slug'].'.'.$image->guessExtension());
         imagedestroy($callFunction);
     }
 
-
     public function onFormSubmit(FormEvent $event)
     {
-        dd($event->getForm()->getData());
+        dd($event->getData());
     }
 
     public static function getSubscribedEvents(): array

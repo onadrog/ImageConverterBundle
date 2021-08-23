@@ -10,6 +10,8 @@ class MockType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('products', ImageConverterType::class);
+        $builder
+            ->add('file', ImageConverterType::class)
+            ->add('name');
     }
 }

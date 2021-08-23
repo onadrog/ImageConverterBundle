@@ -17,11 +17,12 @@ class TypeTest extends TypeTestCase
 
     protected function setUp(): void
     {
-        /* @var ImageUtils|\PHPUnit\Framework\MockObject\MockObject */
         $this->utils = $this->createMock(ImageUtils::class);
         $this->utils->method('createGdImg')->willReturn(\imagecreatefromjpeg(dirname(__DIR__, 1).'/Mock/images/STUB.jpeg'));
+        $this->utils->method('namer')->willReturn(['slug' => 'abc', 'safename' => 'abc']);
         $this->utils->expects($this->once())->method('createGdImg');
 
+        /* @var ImageUtils|\PHPUnit\Framework\MockObject\MockObject */
         $this->subscriber = new ImageConverterSubscriber(
             ['namer' => 'default', 'quality' => 80],
             $this->utils
@@ -42,9 +43,9 @@ class TypeTest extends TypeTestCase
     }
 
     /*
-     * Test ImaconvertType work wirh evntsubscriber and return imageWebp():bool.
+     * Test ImaconvertType work with evntsubscriber
      */
-/*     public function testTypeTrigger(): void
+    public function testTypeTrigger(): void
     {
         $formData = [
             'image' => new UploadedFile(dirname(__DIR__, 1).'/Mock/images/JPG.jpg', 'JPG'),
@@ -52,6 +53,5 @@ class TypeTest extends TypeTestCase
 
         $form = $this->factory->createNamed('products', ImageConverterType::class, new Media());
         $form->submit($formData);
-        $this->isTrue();
-    } */
+    }
 }

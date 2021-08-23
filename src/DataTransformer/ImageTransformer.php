@@ -9,7 +9,7 @@ class ImageTransformer implements DataTransformerInterface
     public function transform($value)
     {
         return [
-            'image' => $value
+            'image' => $value,
         ];
     }
 

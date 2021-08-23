@@ -19,7 +19,7 @@ class ImageConverterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'mapped' => true,
+            'mapped' => false,
             'label' => false,
         ]);
     }
@@ -35,7 +35,8 @@ class ImageConverterType extends AbstractType
             'mapped' => false,
             'required' => $options['required'] ?? true,
             'multiple' => false,
-        ])->addEventSubscriber($this->imageConverterSubscriber);
-        $builder->addModelTransformer(new ImageTransformer());
+        ]);
+        $builder->addEventSubscriber($this->imageConverterSubscriber);
+        //$builder->addModelTransformer(new ImageTransformer());
     }
 }

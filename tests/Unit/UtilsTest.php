@@ -7,6 +7,7 @@ use Onadrog\ImageConverterBundle\Mapping\Attribute\ImageUpload;
 use Onadrog\ImageConverterBundle\Mock\Entity\Entity\DummyWithAttribute;
 use Onadrog\ImageConverterBundle\Mock\Entity\Entity\Media;
 use Onadrog\ImageConverterBundle\Mock\Entity\Entity\Product;
+use Onadrog\ImageConverterBundle\Mock\Entity\Entity\SoloFile;
 use Onadrog\ImageConverterBundle\Service\ImageUtils;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -37,11 +38,11 @@ class UtilsTest extends TestCase
     /**
      * @covers \Onadrog\ImageConverterBundle\Service\ImageUtils::guessMappedClass
      * @covers \Onadrog\ImageConverterBundle\Service\ImageUtils::readClassAttribute
-     * Test Entity Media as Attribute ImageUpload
+     * Test Entity SoloFile as Attribute ImageUpload and ImageUploadProperties
      */
     public function testAttribute(): void
     {
-        $array = ImageUtils::guessMappedClass(new Media(), 'products');
+        $array = ImageUtils::guessMappedClass(new SoloFile(), 'file');
         $classAttributes = $array['entity']->getAttributes()[0]->getName();
         $this->assertInstanceOf(ReflectionClass::class, $array['entity']);
         $this->assertEquals(ImageUpload::class, $classAttributes);
@@ -87,7 +88,7 @@ class UtilsTest extends TestCase
         foreach ($originalNames as $name) {
             $safeName = $slug->slug($name);
             $res = $utils->namer($name, 'default');
-            $this->assertEquals($safeName, $res['safeName']);
+            $this->assertEquals($safeName, $res['safename']);
             $res = $utils->namer($name, 'uuid');
             $this->assertIsArray($res);
             $this->assertArrayHasKey('slug', $res);

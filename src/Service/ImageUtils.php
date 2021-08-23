@@ -25,7 +25,7 @@ class ImageUtils
         if ('jpg' === $extension) {
             return imagecreatefromjpeg($imagePath);
         } else {
-            $img = 'imagecreatefrom' . $extension;
+            $img = 'imagecreatefrom'.$extension;
 
             return $img($imagePath);
         }
@@ -37,18 +37,20 @@ class ImageUtils
     public function namer(string $originalName, string $option): array
     {
         $slug = new AsciiSlugger();
-        $safeName = $slug->slug($originalName);
+        $safeName = (string) $slug->slug($originalName);
 
         $slug = match ($option) {
-            'default' => $safeName,
+            'default' => (string) $safeName,
             'uuid' => (string) Uuid::v6(),
-            'mixed' => str_replace('.', '-', uniqid($safeName . '-', true)),
+            'mixed' => str_replace('.', '-', uniqid($safeName.'-', true)),
         };
 
-        return ['slug' => $slug, 'safeName' => (string) $safeName];
+        return ['slug' => $slug, 'safename' => $safeName];
     }
 
-
+    /**
+     * @return array<object>
+     */
     private static function readProperty(ReflectionProperty $property)
     {
         $reader = new AnnotationReader();

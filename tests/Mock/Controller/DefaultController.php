@@ -3,6 +3,7 @@
 namespace Onadrog\ImageConverterBundle\Mock\Controller;
 
 use Onadrog\ImageConverterBundle\Mock\Entity\Entity\Media;
+use Onadrog\ImageConverterBundle\Mock\Entity\Entity\SoloFile;
 use Onadrog\ImageConverterBundle\Mock\Type\MockType;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,11 +19,11 @@ class DefaultController extends AbstractController
 
     public function form(Request $request): Response
     {
-        //$medium = new Media();
-        $refClass = new ReflectionClass("Onadrog\ImageConverterBundle\Mock\Entity\Entity\\" . $request->get('entity'));
-        $medium = $refClass->newInstance();
+        $medium = new SoloFile();
+        //$refClass = new ReflectionClass("Onadrog\ImageConverterBundle\Mock\Entity\Entity\\".$request->get('entity'));
+        //$medium = $refClass->newInstance();
         $form = $this->createForm(MockType::class, $medium);
-       $form->handleRequest($request);
+        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($medium);
