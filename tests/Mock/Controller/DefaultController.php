@@ -2,7 +2,6 @@
 
 namespace Onadrog\ImageConverterBundle\Mock\Controller;
 
-use Onadrog\ImageConverterBundle\Mock\Entity\Entity\Media;
 use Onadrog\ImageConverterBundle\Mock\Entity\Entity\SoloFile;
 use Onadrog\ImageConverterBundle\Mock\Type\MockType;
 use ReflectionClass;

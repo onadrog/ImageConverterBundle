@@ -80,7 +80,7 @@ class SoloFile
     }
 
     /**
-     * Get the value of file
+     * Get the value of file.
      */
     public function getFile()
     {
@@ -88,9 +88,9 @@ class SoloFile
     }
 
     /**
-     * Set the value of file
+     * Set the value of file.
      *
-     * @return  self
+     * @return self
      */
     public function setFile($file)
     {

@@ -8,8 +8,6 @@ RUN apk add --no-cache libjpeg-turbo-dev \
 
 RUN apk add --no-cache \
     && pecl install xdebug-3.0.4 \
-    && docker-php-ext-install pdo_mysql \
-    && docker-php-ext-install mysqli \
     && docker-php-ext-enable xdebug \
     && docker-php-ext-configure gd --with-webp --with-jpeg \
     && docker-php-ext-install gd \

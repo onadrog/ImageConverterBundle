@@ -70,7 +70,7 @@ class ImageConverterSubscriber implements EventSubscriberInterface
     {
         return [
             'form.pre_submit' => 'onFormPreSubmit',
-            'form.submit' => 'onFormSubmit'
+            'form.submit' => 'onFormSubmit',
         ];
     }
 }
