@@ -44,12 +44,12 @@ class ImageConverterSubscriber implements EventSubscriberInterface
         imagewebp($callFunction, $imagePath, $this->config['quality']);
 
         $data[$prop['name']] = $slug['safename'];
-        $data[$prop['slug']] = $slug['slug'].'.'.$image->guessExtension();
+        $data[$prop['slug']] = $slug['slug'] . '.' . $image->guessExtension();
         $data[$prop['dimension']] = json_encode($dimension);
 
         $event->setData($data);
 
-        $image->move($this->config['media_uploads_path'], $slug['slug'].'.'.$image->guessExtension());
+        $image->move($this->config['media_uploads_path'], $slug['slug'] . '.' . $image->guessExtension());
         imagedestroy($callFunction);
     }
 
