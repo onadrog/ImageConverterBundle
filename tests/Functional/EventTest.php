@@ -16,7 +16,7 @@ class EventTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $client->submitForm('Save', [
             'mock[name]' => 'a',
-            'mock[file][image]' => $file,
+            'mock[file][image_converter]' => $file,
         ]);
         $this->assertTrue(true);
         // $this->assertResponseRedirects('/');

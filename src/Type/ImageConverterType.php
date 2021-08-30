@@ -2,14 +2,16 @@
 
 namespace Onadrog\ImageConverterBundle\Type;
 
-use Onadrog\ImageConverterBundle\DataTransformer\ImageTransformer;
 use Onadrog\ImageConverterBundle\EventSubscriber\ImageConverterSubscriber;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Traversable;
 
-class ImageConverterType extends AbstractType
+class ImageConverterType extends AbstractType implements DataMapperInterface
 {
     public function __construct(
         private ImageConverterSubscriber $imageConverterSubscriber
@@ -19,8 +21,7 @@ class ImageConverterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'mapped' => false,
-            'label' => false,
+            'compound' => true,
         ]);
     }
 
@@ -31,12 +32,46 @@ class ImageConverterType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('image', FileType::class, [
-            'mapped' => false,
-            'required' => $options['required'] ?? true,
-            'multiple' => false,
-        ]);
-        $builder->addEventSubscriber($this->imageConverterSubscriber);
-        //$builder->addModelTransformer(new ImageTransformer());
+        $builder->setDataMapper($this)->addEventSubscriber($this->imageConverterSubscriber);
+    }
+
+    public function mapDataToForms($viewData, Traversable $forms)
+    {
+        if (null === $viewData) {
+            return;
+        }
+
+        /** @var FormInterface[] $form */
+        $form = iterator_to_array($forms);
+        foreach ($form as $f) {
+            if ('image_converter' !== $f->getName()) {
+                $class = $f->getParent()->getData();
+                $getter = $this->getPropertyAccess()->getValue($class, $f->getName());
+                $f->setData($viewData->$getter);
+            }
+        }
+    }
+
+    public function mapFormsToData(Traversable $forms, &$viewData)
+    {
+        /** @var FormInterface[] $form */
+        $form = iterator_to_array($forms);
+        foreach ($form as $f) {
+            if ('image_converter' !== $f->getName()) {
+                $class = $f->getRoot()->getData();
+                if ('dimension' === $f->getName()) {
+                    $data[] = json_decode($f->getData(), true);
+                    $setter = $this->getPropertyAccess()->setValue($class, $f->getName(), $data[0]);
+                } else {
+                    $setter = $this->getPropertyAccess()->setValue($class, $f->getName(), $f->getData());
+                }
+                $viewData = $setter;
+            }
+        }
+    }
+
+    private function getPropertyAccess(): PropertyAccessor
+    {
+        return PropertyAccess::createPropertyAccessor();
     }
 }

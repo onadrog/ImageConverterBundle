@@ -19,7 +19,7 @@ class DatabaseTest extends WebTestCase
         $client->request('POST', '/form/Media');
         $client->submitForm('Save', [
             'mock[name]' => 'd',
-            'mock[file][image]' => $file,
+            'mock[file][image_converter]' => $file,
         ]);
         $this->assertFileExists(self::UPLOAD_PATH.'JPG.webp');
         // $this->assertResponseRedirects('/');
