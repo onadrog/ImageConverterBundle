@@ -25,7 +25,6 @@ class ImageConverterSubscriber implements EventSubscriberInterface
         if (!$image instanceof UploadedFile) {
             return;
         }
-        $formParent = $event->getForm()->getParent();
         $form = $event->getForm();
         $class = $form->getRoot()->getData();
         $property = $form->getName();
@@ -43,12 +42,6 @@ class ImageConverterSubscriber implements EventSubscriberInterface
         $callFunction = $this->imageUtils->createGdImg($image->guessExtension(), $imagePath);
 
         imagewebp($callFunction, $imagePath, $this->config['quality']);
-        $values = [
-            $prop['name'] => $slug['safename'],
-            $prop['slug'] => $slug['slug'],
-            $prop['dimension'] => $dimension,
-            //    $property => $data['entity']->newInstance(),
-        ];
 
         $data[$prop['name']] = $slug['safename'];
         $data[$prop['slug']] = $slug['slug'];
@@ -60,18 +53,12 @@ class ImageConverterSubscriber implements EventSubscriberInterface
         imagedestroy($callFunction);
     }
 
-    public function onFormPreSet(FormEvent $event)
+    public function onFormPreSet(FormEvent $event): void
     {
         $form = $event->getForm();
         $form = $event->getForm();
         $class = $form->getRoot()->getData();
         $attributes = ImageUtils::guessMappedClass($class, $form->getName());
-        /*  foreach ($attributes as $key => $value) {
-            if ('entity' !== $key ) {
-                $form->add($value, HiddenType::class);
-            }
-        } */
-
         $form
             ->add($attributes['name'], HiddenType::class)
             ->add($attributes['slug'], HiddenType::class)

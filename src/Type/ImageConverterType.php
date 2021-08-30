@@ -6,6 +6,7 @@ use Onadrog\ImageConverterBundle\EventSubscriber\ImageConverterSubscriber;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
@@ -35,7 +36,7 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
         $builder->setDataMapper($this)->addEventSubscriber($this->imageConverterSubscriber);
     }
 
-    public function mapDataToForms($viewData, Traversable $forms)
+    public function mapDataToForms($viewData, Traversable $forms): void
     {
         if (null === $viewData) {
             return;
@@ -52,7 +53,7 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
         }
     }
 
-    public function mapFormsToData(Traversable $forms, &$viewData)
+    public function mapFormsToData(Traversable $forms, &$viewData): void
     {
         /** @var FormInterface[] $form */
         $form = iterator_to_array($forms);
