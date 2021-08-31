@@ -5,6 +5,9 @@ namespace Onadrog\ImageConverterBundle\Twig;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
+/**
+ * @author Sébastien Gordano <sebastien.gordano@gmail.com>
+ */
 class ImageTwigExtension extends AbstractExtension
 {
     public function __construct(private array $config)

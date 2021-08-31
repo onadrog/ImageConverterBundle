@@ -15,6 +15,9 @@ use RuntimeException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
+/**
+ * @author Sébastien Gordano <sebastien.gordano@gmail.com>
+ */
 class UtilsTest extends TestCase
 {
     // ----------------------- guessMappedClass method ----------------------- \\
@@ -31,7 +34,6 @@ class UtilsTest extends TestCase
         $array = ImageUtils::guessMappedClass(new Product(), 'media');
         $this->assertIsArray($array);
         $this->assertArrayHasKey('slug', $array);
-        $this->assertInstanceOf(ReflectionClass::class, $array['entity']);
         $this->assertEquals(Media::class, $array['entity']->name);
     }
 
@@ -43,9 +45,9 @@ class UtilsTest extends TestCase
     public function testAttribute(): void
     {
         $array = ImageUtils::guessMappedClass(new SoloFile(), 'file');
-        $classAttributes = $array['entity']->getAttributes()[0]->getName();
+        $classAttributes = $array['entity']->getAttributes(ImageUpload::class);
         $this->assertInstanceOf(ReflectionClass::class, $array['entity']);
-        $this->assertEquals(ImageUpload::class, $classAttributes);
+        $this->assertEquals(ImageUpload::class, $classAttributes[0]->getName());
         $this->assertContains('slug', $array);
     }
 

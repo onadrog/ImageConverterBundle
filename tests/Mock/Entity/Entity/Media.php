@@ -40,8 +40,10 @@ class Media
     /**
      * @ORM\OneToMany(targetEntity=Product::class, mappedBy="media")
      */
-    #[ImageUploadProperties(name: 'name', slug: 'slug', dimension: 'dimension')]
     private $products;
+
+    #[ImageUploadProperties(name: 'name', slug: 'slug', dimension: 'dimension')]
+    private $file;
 
     public function __construct()
     {
@@ -115,6 +117,26 @@ class Media
                 $product->setMedia(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Get the value of file.
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * Set the value of file.
+     *
+     * @return self
+     */
+    public function setFile($file)
+    {
+        $this->file = $file;
 
         return $this;
     }

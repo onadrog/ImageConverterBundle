@@ -5,6 +5,9 @@ namespace Onadrog\ImageConverterBundle\DependencyInjection;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
+/**
+ * @author Sébastien Gordano <sebastien.gordano@gmail.com>
+ */
 class ImageConverterCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void

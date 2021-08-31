@@ -8,6 +8,7 @@
         <service id="image_converter.type" class="Onadrog\ImageConverterBundle\Type\ImageConverterType">
             <tag name="form.twig"/>
             <argument type="service" id="image_converter.subscriber"/>
+            <argument type="service" id="property_accessor"/>
         </service>
     </services>
 </container>

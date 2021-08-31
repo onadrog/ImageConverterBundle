@@ -7,12 +7,12 @@ dcktestrun := docker-compose -f docker/docker-compose.yaml run --rm
 
 .PHONY: tests
 tests:
-#	rm -rf var
 	$(dcktestrun) phptest tests/bin/console cache:clear
-	$(dcktestrun) phptest tests/bin/console doctrine:database:drop --env=test --force || true
-	$(dcktestrun) phptest tests/bin/console doctrine:database:create --env=test
-	$(dcktestrun) phptest tests/bin/console doctrine:migrations:migrate --env=test latest -n
+	$(dcktestrun) phptest tests/bin/console doctrine:database:drop --force || true
+	$(dcktestrun) phptest tests/bin/console doctrine:database:create
+	$(dcktestrun) phptest tests/bin/console doctrine:migrations:migrate latest -n
 	$(dcktestrun) phptest vendor/bin/phpunit --debug -c . --coverage-html=coverage/
+	rm -rf public
 
 .PHONY: phpstan
 phpstan:
@@ -24,4 +24,22 @@ fixer:
 
 .PHONY: githubTests
 githubTests:
+	$(dcktestrun) phptest tests/bin/console cache:clear
+	$(dcktestrun) phptest tests/bin/console doctrine:database:drop --env=test --force || true
+	$(dcktestrun) phptest tests/bin/console doctrine:database:create --env=test
+	$(dcktestrun) phptest tests/bin/console doctrine:migrations:migrate --env=test latest -n
 	$(dcktestrun) phptest vendor/bin/phpunit -c .
+
+
+ifeq (console,$(firstword $(MAKECMDGOALS)))
+  COMMAND_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  COMMAND_ARGS := $(subst :,\:,$(COMMAND_ARGS))
+  $(eval $(COMMAND_ARGS):;@:)
+endif
+
+prog:
+	tests/bin/console $(COMMAND_ARGS)
+
+.PHONY: console
+console: prog
+	@echo prog

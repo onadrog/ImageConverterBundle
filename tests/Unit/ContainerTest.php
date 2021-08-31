@@ -7,6 +7,9 @@ use Onadrog\ImageConverterBundle\Service\ImageUtils;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * @author Sébastien Gordano <sebastien.gordano@gmail.com>
+ */
 class ContainerTest extends KernelTestCase
 {
     private static function geKernelContainer(): ContainerInterface

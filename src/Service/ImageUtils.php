@@ -13,6 +13,8 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\Uid\Uuid;
 
 /**
+ * @author Sébastien Gordano <sebastien.gordano@gmail.com>
+ *
  * @internal
  */
 class ImageUtils
@@ -60,6 +62,7 @@ class ImageUtils
 
     /**
      * Return the mapped class with the ImageUpload Attribute.
+     * TODO: cache array result.
      */
     public static function guessMappedClass(object $class, string $property): array
     {
@@ -81,14 +84,14 @@ class ImageUtils
                 }
             }
         } else {
-            $array = self::readClassAttribute($Refclass, $property);
+            $array = self::readClassAttribute($class, $property);
         }
 
         return $array;
     }
 
     /**
-     * Retrieve metadata from relation mapping attributes.
+     * Retrieve metadata attributes from relation mapping.
      */
     private static function readRelationalMapping(string $class, string $property): array
     {
@@ -97,25 +100,29 @@ class ImageUtils
             throw new RuntimeException(sprintf('You probably forgot to use ImageUpload attribute in class %s', $target->name));
         }
         $target->newInstance();
-        $file = $target->getProperty($property);
-        $arguments = $file->getAttributes(ImageUploadProperties::class);
+        $file = $target->getProperties();
+        $arguments = [];
+        foreach ($file as $f) {
+            $arguments = $f->getAttributes(ImageUploadProperties::class);
+        }
         $argsArray = [
             'property' => $property,
             'entity' => $target,
+            'relation' => true,
         ];
         foreach ($arguments as $arg) {
-            $entityTargetArray = array_merge($argsArray, $arg->getArguments());
+            $argsArray = array_merge($argsArray, $arg->getArguments());
         }
 
-        return $entityTargetArray ?? []; //TODO persist entity
+        return $argsArray;
     }
 
     /**
      * Read class ImageUpload Attribute.
      */
-    public static function readClassAttribute(ReflectionClass $reflectionClass, string $property): array
+    public static function readClassAttribute(object $class, string $property): array
     {
-        $target = $reflectionClass;
+        $target = new ReflectionClass($class);
         $props = self::readProperty($target->getProperty($property));
         $entity = $target;
         foreach ($props as $prop) {
@@ -123,20 +130,22 @@ class ImageUtils
                 $entity = new ReflectionClass($prop->targetEntity);
             }
         }
-        $reflectionClass->newInstance();
-        $file = $reflectionClass->getProperty($property);
+        $target->newInstance();
+        $file = $target->getProperty($property);
         $arguments = $file->getAttributes(ImageUploadProperties::class);
         if (!$arguments) {
-            throw new RuntimeException(sprintf('You probably forgot to use ImageUploadProperties attribute in class %s', $reflectionClass->name));
+            throw new RuntimeException(sprintf('You probably forgot to use ImageUploadProperties attribute in class %s', $target->name));
         }
+        // TODO: Remove this array if it's not a relational mapping
         $argsArray = [
             'property' => $property,
             'entity' => $entity,
+            'relation' => false,
         ];
         foreach ($arguments as $arg) {
-            $entityTargetArray = array_merge($argsArray, $arg->getArguments());
+            $argsArray = array_merge($argsArray, $arg->getArguments());
         }
 
-        return $entityTargetArray ?? []; //TODO persist entity
+        return $argsArray;
     }
 }

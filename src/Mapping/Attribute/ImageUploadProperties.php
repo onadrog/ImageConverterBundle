@@ -4,6 +4,9 @@ namespace Onadrog\ImageConverterBundle\Mapping\Attribute;
 
 use Attribute;
 
+/**
+ * @author Sébastien Gordano <sebastien.gordano@gmail.com>
+ */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class ImageUploadProperties
 {

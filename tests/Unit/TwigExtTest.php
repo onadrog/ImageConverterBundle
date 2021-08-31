@@ -5,6 +5,9 @@ namespace Onadrog\ImageConverterBundle\Tests\Unit;
 use Onadrog\ImageConverterBundle\Twig\ImageTwigExtension;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @author Sébastien Gordano <sebastien.gordano@gmail.com>
+ */
 class TwigExtTest extends TestCase
 {
     private const PATH = '/media/pictures/';

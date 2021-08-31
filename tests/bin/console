@@ -1,6 +1,10 @@
 #!/usr/bin/env php
 <?php
 
+/**
+ * @author Sébastien Gordano <sebastien.gordano@gmail.com>
+ */
+
 use Onadrog\ImageConverterBundle\Tests\ImageConverterTestingKernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 

@@ -25,7 +25,7 @@ class Product
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Media::class, inversedBy="products")
+     * @ORM\ManyToOne(targetEntity=Media::class, inversedBy="products", cascade={"persist"})
      */
     private $media;
 

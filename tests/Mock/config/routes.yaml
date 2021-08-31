@@ -3,5 +3,5 @@ index:
   controller: Onadrog\ImageConverterBundle\Mock\Controller\DefaultController::index
 
 form:
-  path: /form/{entity}
+  path: /form/{entity}/{property}
   controller: Onadrog\ImageConverterBundle\Mock\Controller\DefaultController::form

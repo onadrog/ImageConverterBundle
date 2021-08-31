@@ -7,12 +7,15 @@ use Onadrog\ImageConverterBundle\Mock\Entity\Entity\Media;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
+/**
+ * @author Sébastien Gordano <sebastien.gordano@gmail.com>
+ */
 class ImageUploadPropertiesTest extends TestCase
 {
     public function testAttribute(): void
     {
         $ref = new ReflectionClass(Media::class);
-        $props = $ref->getProperty('products');
+        $props = $ref->getProperty('file');
         $attr = $props->getAttributes(ImageUploadProperties::class);
         $this->assertArrayHasKey('slug', $attr[0]->getArguments());
         $var = $attr[0]->getArguments();
