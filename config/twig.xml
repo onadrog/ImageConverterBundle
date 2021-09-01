@@ -4,10 +4,9 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services
         https://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <defaults autoconfigure="true"/>
+        <defaults autoconfigure="true" autowire="true"/>
         <service id="image_converter.twig" class="Onadrog\ImageConverterBundle\Twig\ImageTwigExtension">
             <tag name="twig.extension"/>
-            <argument >%image_converter%</argument>
         </service>
     </services>
 </container>

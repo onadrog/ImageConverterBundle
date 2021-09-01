@@ -41,18 +41,29 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
 
     public function mapDataToForms($viewData, Traversable $forms): void
     {
+        /** @var FormInterface[] $form */
+        $form = iterator_to_array($forms);
+        if ($form['image_converter']->getConfig()->getOption('attr')['data-relation']) {
+            $class = $form['image_converter']->getConfig()->getOption('attr')['data-entity'];
+            $viewData = new $class();
+        } else {
+            $viewData = $form['image_converter']->getRoot()->getData();
+        }
         if (null === $viewData) {
             return;
         }
-
-        /** @var FormInterface[] $form */
-        $form = iterator_to_array($forms);
-        $class = $form['image_converter']->getConfig()->getOption('attr')['data-entity'];
-        $obj = new $class();
         foreach ($form as $f) {
             if ('image_converter' !== $f->getName()) {
-                $getter = $this->propertyAccessor->getValue($obj, $f->getName());
-                $f->setData($viewData->$getter);
+                if (
+                    isset($f->getConfig()->getOption('attr')['data-type']) &&
+                    'dimension' === $f->getConfig()->getOption('attr')['data-type']
+                ) {
+                    $val = $this->propertyAccessor->getValue($viewData, $f->getName());
+                    $f->setData(json_encode($val));
+                } else {
+                    $val = $this->propertyAccessor->getValue($viewData, $f->getName());
+                    $f->setData($val);
+                }
             }
         }
     }
@@ -61,9 +72,6 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
     {
         /** @var FormInterface[] $form */
         $form = iterator_to_array($forms);
-        /*     $class = $form['image_converter']->getConfig()->getOption('attr')['data-entity'];
-        $obj = new $class; */
-
         if ($form['image_converter']->getConfig()->getOption('attr')['data-relation']) {
             $class = $form['image_converter']->getConfig()->getOption('attr')['data-entity'];
             $viewData = new $class();
@@ -84,6 +92,5 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
                 }
             }
         }
-        //$viewData = $obj;
     }
 }

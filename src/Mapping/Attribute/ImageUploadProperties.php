@@ -13,7 +13,8 @@ class ImageUploadProperties
     public function __construct(
         protected ?string $name = null,
         protected ?string $slug = null,
-        protected ?string $dimension = null
+        protected ?string $dimension = null,
+        protected ?string $alt = null,
     ) {
     }
 
@@ -39,5 +40,13 @@ class ImageUploadProperties
     public function getDimension(): ?string
     {
         return $this->dimension;
+    }
+
+    /**
+     * Get the value of alt.
+     */
+    public function getAlt(): ?string
+    {
+        return $this->alt;
     }
 }

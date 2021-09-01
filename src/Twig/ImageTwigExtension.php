@@ -2,6 +2,7 @@
 
 namespace Onadrog\ImageConverterBundle\Twig;
 
+use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -10,27 +11,33 @@ use Twig\TwigFunction;
  */
 class ImageTwigExtension extends AbstractExtension
 {
-    public function __construct(private array $config)
+    public function __construct(private Environment $env)
     {
     }
 
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('image_converter_picture', [$this, 'addPicture'], ['is_safe' => ['html']]),
-            new TwigFunction('image_converter_uri', [$this, 'getUri'], ['is_safe' => ['html']]),
+            new TwigFunction(
+                'image_converter_picture',
+                [$this, 'addPicture'],
+                ['is_safe' => ['html']]
+            ),
         ];
     }
 
-    public function addPicture(string $value): string
-    {
-        return <<<HTML
-        <picture></picture>
-        HTML;
-    }
-
-    public function getUri(string $value): string
-    {
-        return $this->config['media_uploads_path'].$value;
+    public function addPicture(
+        object $value,
+        bool $lazyLoad = true,
+        string $classname = 'image_converter_picture'
+    ): string {
+        return $this->env->render('image_converter_picture.html.twig', [
+            'value' => $value,
+            'lazyLoad' => $lazyLoad,
+            'classname' => $classname,
+        ]);
+        /* return <<<HTML
+        <picture class="$classname"><img src=$value.slug alt=$value.name width=$value.dimension.width height=$value.dimension.height/></picture>
+        HTML; */
     }
 }

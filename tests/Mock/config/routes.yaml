@@ -5,3 +5,8 @@ index:
 form:
   path: /form/{entity}/{property}
   controller: Onadrog\ImageConverterBundle\Mock\Controller\DefaultController::form
+
+formsoloedit:
+  path: /form/solofile/{id}/edit
+  controller: Onadrog\ImageConverterBundle\Mock\Controller\DefaultController::formsoloedit
+  methods: ['POST', 'GET']

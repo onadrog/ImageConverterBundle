@@ -14,6 +14,6 @@ class ImageTwigExtensionTest extends WebTestCase
         $client = $this->createClient();
         $client->request('GET', '/');
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('picture', '');
+        $this->assertSelectorTextContains('img', '');
     }
 }

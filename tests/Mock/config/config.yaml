@@ -1,7 +1,7 @@
 framework:
   secret: "secret"
   router:
-    resource: "%kernel.project_dir%/tests/Mock/config/routes.yaml"
+    resource: "%kernel.project_dir%/tests/Mock/config/annotation.yaml"
     utf8: false
   test: true
 
@@ -46,3 +46,4 @@ image_converter:
   media_uploads_path: "%kernel.project_dir%/public/uploads/media/"
   namer: "default" # Possible values : "default", "uuid", "mixed"
   quality: 80
+  public_path: "/uploads/media/"

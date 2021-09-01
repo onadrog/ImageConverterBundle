@@ -23,10 +23,14 @@ class DatabaseTest extends WebTestCase
                 'mock[name]' => 'yo',
             ];
         } else {
-            $data = ["mock[$property][image_converter]" => $file];
+            $data = [
+                "mock[$property][image_converter]" => $file,
+                "mock[$property][alt]" => 'alt img.',
+            ];
         }
         $client = $this->createClient();
         $client->request('POST', "/form/$className/$property");
+
         $client->submitForm('Save', $data);
 
         return $client;
@@ -36,12 +40,12 @@ class DatabaseTest extends WebTestCase
      * test Entity without relational Mapping
      * SoloFile.
      */
-    public function testSave()
-    {
-        $client = $this->getClientForm('jpg', 'SoloFile', 'file');
-        $this->assertFileExists(self::UPLOAD_PATH.'JPG.webp');
-        $this->assertResponseRedirects('/');
-    }
+    /*     public function testSave()
+        {
+            $this->getClientForm('jpg', 'SoloFile', 'file');
+            $this->assertFileExists(self::UPLOAD_PATH . 'JPG.webp');
+            $this->assertResponseRedirects('/');
+        } */
 
     /**
      * test entity with relational mapping
@@ -49,8 +53,18 @@ class DatabaseTest extends WebTestCase
      */
     public function testRelational()
     {
-        $client = $this->getClientForm('jpg', 'Product', 'media');
+        $this->getClientForm('jpg', 'Product', 'media');
         $this->assertFileExists(self::UPLOAD_PATH.'JPG.webp');
         $this->assertResponseRedirects('/');
     }
+
+    /*
+     * test form on edit mapped attributes must be in inputs.
+     */
+/*     public function testFormDataMapperValue()
+    {
+        $client = $this->createClient();
+        $client->request('GET', '/form/solofile/1/edit');
+        $this->assertInputValueSame('solo[file][name]', 'JPEG.fixtures');
+    } */
 }

@@ -11,8 +11,9 @@ tests:
 	$(dcktestrun) phptest tests/bin/console doctrine:database:drop --force || true
 	$(dcktestrun) phptest tests/bin/console doctrine:database:create
 	$(dcktestrun) phptest tests/bin/console doctrine:migrations:migrate latest -n
+	$(dcktestrun) phptest tests/bin/console doctrine:fixtures:load -n
 	$(dcktestrun) phptest vendor/bin/phpunit --debug -c . --coverage-html=coverage/
-	rm -rf public
+	rm -rf public/uploads/media
 
 .PHONY: phpstan
 phpstan:

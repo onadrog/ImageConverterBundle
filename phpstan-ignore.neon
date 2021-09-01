@@ -3,4 +3,4 @@ parameters:
     - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children\(\).#'
     - '#Access to an undefined property object::\$inversedBy.#'
     - '#Access to an undefined property object::\$mappedBy.#'
-    - '#Match expression does not handle remaining value: string#'
+    - '#Match expression does not handle remaining value: mixed#'

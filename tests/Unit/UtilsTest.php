@@ -34,7 +34,7 @@ class UtilsTest extends TestCase
         $array = ImageUtils::guessMappedClass(new Product(), 'media');
         $this->assertIsArray($array);
         $this->assertArrayHasKey('slug', $array);
-        $this->assertEquals(Media::class, $array['entity']->name);
+        $this->assertEquals(Media::class, $array['entity']);
     }
 
     /**
@@ -45,8 +45,9 @@ class UtilsTest extends TestCase
     public function testAttribute(): void
     {
         $array = ImageUtils::guessMappedClass(new SoloFile(), 'file');
-        $classAttributes = $array['entity']->getAttributes(ImageUpload::class);
-        $this->assertInstanceOf(ReflectionClass::class, $array['entity']);
+        $refC = new ReflectionClass($array['entity']);
+        $classAttributes = $refC->getAttributes(ImageUpload::class);
+        $this->assertEquals(SoloFile::class, $array['entity']);
         $this->assertEquals(ImageUpload::class, $classAttributes[0]->getName());
         $this->assertContains('slug', $array);
     }
@@ -89,9 +90,9 @@ class UtilsTest extends TestCase
         $slug = new AsciiSlugger();
         foreach ($originalNames as $name) {
             $safeName = $slug->slug($name);
-            $res = $utils->namer($name, 'default');
+            $res = $utils->namer($name, ['namer' => 'default', 'public_path' => '/public/media/']);
             $this->assertEquals($safeName, $res['safename']);
-            $res = $utils->namer($name, 'uuid');
+            $res = $utils->namer($name, ['namer' => 'uuid', 'public_path' => '/public/media/']);
             $this->assertIsArray($res);
             $this->assertArrayHasKey('slug', $res);
         }

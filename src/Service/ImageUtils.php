@@ -17,7 +17,7 @@ use Symfony\Component\Uid\Uuid;
  *
  * @internal
  */
-class ImageUtils
+final class ImageUtils
 {
     /**
      * Create a GdImage to be converted by imagewebp func.
@@ -36,18 +36,20 @@ class ImageUtils
     /**
      * Slugify / return choosen 'namer' option.
      */
-    public function namer(string $originalName, string $option): array
+    public function namer(string $originalName, array $option): array
     {
         $slug = new AsciiSlugger();
         $safeName = (string) $slug->slug($originalName);
 
-        $slug = match ($option) {
+        $slug = match ($option['namer']) {
             'default' => (string) $safeName,
             'uuid' => (string) Uuid::v6(),
             'mixed' => str_replace('.', '-', uniqid($safeName.'-', true)),
         };
 
-        return ['slug' => $slug, 'safename' => $safeName];
+        $finalSlug = $option['public_path'].$slug;
+
+        return ['slug' => $finalSlug, 'safename' => $safeName];
     }
 
     /**
@@ -103,11 +105,13 @@ class ImageUtils
         $file = $target->getProperties();
         $arguments = [];
         foreach ($file as $f) {
-            $arguments = $f->getAttributes(ImageUploadProperties::class);
+            if (!empty($f->getAttributes(ImageUploadProperties::class))) {
+                $arguments = $f->getAttributes(ImageUploadProperties::class);
+            }
         }
         $argsArray = [
             'property' => $property,
-            'entity' => $target,
+            'entity' => $target->name,
             'relation' => true,
         ];
         foreach ($arguments as $arg) {
@@ -118,7 +122,7 @@ class ImageUtils
     }
 
     /**
-     * Read class ImageUpload Attribute.
+     * Read class with ImageUpload Attribute.
      */
     public static function readClassAttribute(object $class, string $property): array
     {
@@ -136,10 +140,9 @@ class ImageUtils
         if (!$arguments) {
             throw new RuntimeException(sprintf('You probably forgot to use ImageUploadProperties attribute in class %s', $target->name));
         }
-        // TODO: Remove this array if it's not a relational mapping
         $argsArray = [
             'property' => $property,
-            'entity' => $entity,
+            'entity' => $entity->name,
             'relation' => false,
         ];
         foreach ($arguments as $arg) {

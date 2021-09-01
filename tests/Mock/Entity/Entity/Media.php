@@ -42,8 +42,13 @@ class Media
      */
     private $products;
 
-    #[ImageUploadProperties(name: 'name', slug: 'slug', dimension: 'dimension')]
+    #[ImageUploadProperties(name: 'name', slug: 'slug', dimension: 'dimension', alt: 'alt')]
     private $file;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $alt;
 
     public function __construct()
     {
@@ -137,6 +142,18 @@ class Media
     public function setFile($file)
     {
         $this->file = $file;
+
+        return $this;
+    }
+
+    public function getAlt(): ?string
+    {
+        return $this->alt;
+    }
+
+    public function setAlt(string $alt): self
+    {
+        $this->alt = $alt;
 
         return $this;
     }
