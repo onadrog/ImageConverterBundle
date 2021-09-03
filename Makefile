@@ -29,6 +29,7 @@ githubTests:
 	$(dcktestrun) phptest tests/bin/console doctrine:database:drop --env=test --force || true
 	$(dcktestrun) phptest tests/bin/console doctrine:database:create --env=test
 	$(dcktestrun) phptest tests/bin/console doctrine:migrations:migrate --env=test latest -n
+	$(dcktestrun) phptest tests/bin/console doctrine:fixtures:load -n
 	$(dcktestrun) phptest vendor/bin/phpunit -c .
 
 
