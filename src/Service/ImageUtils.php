@@ -19,6 +19,8 @@ use Symfony\Component\Uid\Uuid;
  */
 final class ImageUtils
 {
+    public const CACHE_KEY = 'image_converter_cache_key';
+
     /**
      * Create a GdImage to be converted by imagewebp func.
      */
@@ -82,7 +84,7 @@ final class ImageUtils
                 if (isset($anno->targetEntity)) {
                     $v = $anno->targetEntity;
                     $prop = $anno->mappedBy ?? $anno->inversedBy;
-                    $array = self::readRelationalMapping($v, $prop);
+                    $array = self::readRelationalMapping($v, $prop, $property);
                 }
             }
         } else {
@@ -95,7 +97,7 @@ final class ImageUtils
     /**
      * Retrieve metadata attributes from relation mapping.
      */
-    private static function readRelationalMapping(string $class, string $property): array
+    private static function readRelationalMapping(string $class, string $property, string $form_property): array
     {
         $target = new ReflectionClass($class);
         if (!$target->getAttributes(ImageUpload::class)) {
@@ -110,6 +112,7 @@ final class ImageUtils
             }
         }
         $argsArray = [
+            'form_property' => $form_property,
             'property' => $property,
             'entity' => $target->name,
             'relation' => true,

@@ -1,5 +1,5 @@
 {
-    "name": "onadrog/image-converter-bundle",
+    "name": "onadrog/imageconverterbundle",
     "description": "A simple FormType that convert images into WebP format",
     "type": "symfony-bundle",
     "keywords": [
@@ -53,9 +53,11 @@
             "Onadrog\\ImageConverterBundle\\Mock\\": "tests/Mock"
         }
     },
-    "authors": [{
-        "name": "Sébastien Gordano",
-        "email": "sebastien.gordano@gmail.com"
-    }],
+    "authors": [
+        {
+            "name": "Sébastien Gordano",
+            "email": "sebastien.gordano@gmail.com"
+        }
+    ],
     "minimum-stability": "stable"
 }

@@ -30,7 +30,6 @@ class DatabaseTest extends WebTestCase
         }
         $client = $this->createClient();
         $client->request('POST', "/form/$className/$property");
-
         $client->submitForm('Save', $data);
 
         return $client;
@@ -40,12 +39,12 @@ class DatabaseTest extends WebTestCase
      * test Entity without relational Mapping
      * SoloFile.
      */
-    /*     public function testSave()
-        {
-            $this->getClientForm('jpg', 'SoloFile', 'file');
-            $this->assertFileExists(self::UPLOAD_PATH . 'JPG.webp');
-            $this->assertResponseRedirects('/');
-        } */
+    public function testSave()
+    {
+        $this->getClientForm('jpg', 'SoloFile', 'file');
+        $this->assertFileExists(self::UPLOAD_PATH.'JPG.webp');
+        $this->assertResponseRedirects('/');
+    }
 
     /**
      * test entity with relational mapping
@@ -61,10 +60,10 @@ class DatabaseTest extends WebTestCase
     /*
      * test form on edit mapped attributes must be in inputs.
      */
-/*     public function testFormDataMapperValue()
+    public function testFormDataMapperValue()
     {
         $client = $this->createClient();
         $client->request('GET', '/form/solofile/1/edit');
-        $this->assertInputValueSame('solo[file][name]', 'JPEG.fixtures');
-    } */
+        $this->assertInputValueSame('solo[file][alt]', 'A fixture image.');
+    }
 }

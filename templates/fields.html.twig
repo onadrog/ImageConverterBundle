@@ -1,4 +1,11 @@
-{% block image_converter_upload_widget %}
-	{{ form_errors(form) }}
-	{{ form_help(form) }}
+{% block image_converter_widget %}
+	<div>
+		{{form_label(form.image_converter)}}
+		{{form_widget(form.image_converter)}} <br>
+		{{form_label(form.alt)}}
+		{{form_widget(form.alt)}}
+		{% if image_url is not null %}
+			<img src="{{ image_url }}" width="{{ width }}" height="{{ height }}"/>
+		</div>
+	{% endif %}
 {% endblock %}

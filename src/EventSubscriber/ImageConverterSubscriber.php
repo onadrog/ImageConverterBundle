@@ -3,7 +3,7 @@
 namespace Onadrog\ImageConverterBundle\EventSubscriber;
 
 use Onadrog\ImageConverterBundle\Service\ImageUtils;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -20,7 +20,7 @@ class ImageConverterSubscriber implements EventSubscriberInterface
     public function __construct(
         private array $config,
         private ImageUtils $imageUtils,
-        private FilesystemAdapter $cache,
+        private AdapterInterface $cache,
     ) {
     }
 
@@ -35,7 +35,7 @@ class ImageConverterSubscriber implements EventSubscriberInterface
         $class = $form->getRoot()->getData();
         $property = $form->getName();
 
-        $cachedValues = $this->cache->getItem($property);
+        $cachedValues = $this->cache->getItem(ImageUtils::CACHE_KEY);
         $prop = $cachedValues->get();
 
         $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
@@ -49,9 +49,11 @@ class ImageConverterSubscriber implements EventSubscriberInterface
         $dimension = ['height' => $imageHeight, 'width' => $imageWidth];
 
         $imagePath = $image->getPathName();
-        $callFunction = $this->imageUtils->createGdImg($image->guessExtension(), $imagePath);
-
-        imagewebp($callFunction, $imagePath, $this->config['quality']);
+        if (!empty(get_extension_funcs('gd'))) {
+            $callFunction = $this->imageUtils->createGdImg($image->guessExtension(), $imagePath);
+            imagewebp($callFunction, $imagePath, $this->config['quality']);
+            imagedestroy($callFunction);
+        }
 
         $data[$prop['name']] = $slug['safename'].'.'.$image->guessExtension();
         $data[$prop['slug']] = $slug['slug'].'.'.$image->guessExtension();
@@ -61,7 +63,6 @@ class ImageConverterSubscriber implements EventSubscriberInterface
         }
 
         $event->setData($data);
-        imagedestroy($callFunction);
     }
 
     /**
@@ -74,7 +75,7 @@ class ImageConverterSubscriber implements EventSubscriberInterface
         $prop = $form->getName();
         $attributes = ImageUtils::guessMappedClass($class, $form->getName());
 
-        $cachedAttr = $this->cache->getItem($prop);
+        $cachedAttr = $this->cache->getItem(ImageUtils::CACHE_KEY);
         $cachedAttr->set($attributes);
         $this->cache->save($cachedAttr);
         $form
@@ -106,7 +107,7 @@ class ImageConverterSubscriber implements EventSubscriberInterface
     public function onFormPostSubmit(FormEvent $event): void
     {
         $form = $event->getForm();
-        $this->cache->deleteItem($form->getName());
+        $this->cache->deleteItem(ImageUtils::CACHE_KEY);
         $key = $form->get('slug')->getData();
         if ($form->isSubmitted() && $form->isValid()) {
             $image = $form->get('image_converter')->getData();

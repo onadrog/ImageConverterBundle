@@ -9,8 +9,7 @@
         <service id="image_converter.subscriber" class="Onadrog\ImageConverterBundle\EventSubscriber\ImageConverterSubscriber">
             <argument >%image_converter%</argument>
             <argument type="service" id="image_converter.utils" />
-            <argument type="service" id="cache.app"/>
+            <argument />
         </service>
     </services>
-
 </container>

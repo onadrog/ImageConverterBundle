@@ -3,10 +3,13 @@
 namespace Onadrog\ImageConverterBundle\Type;
 
 use Onadrog\ImageConverterBundle\EventSubscriber\ImageConverterSubscriber;
+use Onadrog\ImageConverterBundle\Service\ImageUtils;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Traversable;
@@ -18,7 +21,8 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
 {
     public function __construct(
         private ImageConverterSubscriber $imageConverterSubscriber,
-        private PropertyAccessorInterface $propertyAccessor
+        private PropertyAccessorInterface $propertyAccessor,
+        private AdapterInterface $cache
     ) {
     }
 
@@ -37,6 +41,33 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->setDataMapper($this)->addEventSubscriber($this->imageConverterSubscriber);
+    }
+
+    public function buildView(FormView $view, FormInterface $form, array $options): void
+    {
+        $cachedValue = $this->cache->getItem(ImageUtils::CACHE_KEY);
+        $props = $cachedValue->get();
+
+        $imgUrl = null;
+        $data = null;
+        if ($form['image_converter']->getConfig()->getOption('attr')['data-relation']) {
+            $entity = $form['image_converter']->getRoot()->getData();
+            $data = $this->propertyAccessor->getValue($entity, $props['form_property']);
+        } else {
+            $data = $form['image_converter']->getRoot()->getData();
+        }
+        if (
+            $this->propertyAccessor->isReadable($data, $props['slug']) &&
+            null !== $this->propertyAccessor->getValue($data, $props['slug'])
+        ) {
+            $imgUrl = $this->propertyAccessor->getValue($data, $props['slug']);
+            $imgDimension = $this->propertyAccessor->getValue($data, $props['dimension']);
+            $division = $imgDimension['width'] >= 600 ? 4 : 2;
+            $view->vars['width'] = $imgDimension['width'] / $division;
+            $view->vars['height'] = $imgDimension['height'] / $division;
+        }
+
+        $view->vars['image_url'] = $imgUrl;
     }
 
     public function mapDataToForms($viewData, Traversable $forms): void
