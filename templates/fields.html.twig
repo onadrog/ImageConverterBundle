@@ -4,6 +4,9 @@
 		{{form_widget(form.image_converter)}} <br>
 		{{form_label(form.alt)}}
 		{{form_widget(form.alt)}}
+		{{form_widget(form.name)}}
+		{{form_widget(form.slug)}}
+		{{form_widget(form.dimension)}}
 		{% if image_url is not null %}
 			<img src="{{ image_url }}" width="{{ width }}" height="{{ height }}"/>
 		</div>

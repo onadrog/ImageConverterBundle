@@ -46,4 +46,4 @@ image_converter:
   media_uploads_path: "%kernel.project_dir%/public/uploads/media/"
   namer: "default" # Possible values : "default", "uuid", "mixed"
   quality: 80
-  public_path: "/uploads/media/"
+  public_path: "/public/uploads/media/"

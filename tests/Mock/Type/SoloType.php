@@ -2,7 +2,7 @@
 
 namespace Onadrog\ImageConverterBundle\Mock\Type;
 
-use Onadrog\ImageConverterBundle\Type\ImageConverterType;
+use Onadrog\ImageConverterBundle\Form\Type\ImageConverterType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 

@@ -51,7 +51,7 @@ final class ImageUtils
 
         $finalSlug = $option['public_path'].$slug;
 
-        return ['slug' => $finalSlug, 'safename' => $safeName];
+        return ['slug' => $finalSlug, 'safename' => $slug];
     }
 
     /**

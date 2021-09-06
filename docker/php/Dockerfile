@@ -13,7 +13,12 @@ RUN apk add --no-cache \
     && docker-php-ext-install gd \
     && apk del --purge autoconf g++ make
 
-RUN apk --no-cache add shadow && \
-    usermod -u 1000 www-data
+RUN curl -s https://getcomposer.org/installer | php
+
+RUN mv composer.phar /usr/local/bin/composer
+
 
 WORKDIR /var/www/html
+
+RUN apk --no-cache add shadow && \
+    usermod -u 1000 www-data

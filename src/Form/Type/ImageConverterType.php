@@ -1,6 +1,6 @@
 <?php
 
-namespace Onadrog\ImageConverterBundle\Type;
+namespace Onadrog\ImageConverterBundle\Form\Type;
 
 use Onadrog\ImageConverterBundle\EventSubscriber\ImageConverterSubscriber;
 use Onadrog\ImageConverterBundle\Service\ImageUtils;
@@ -45,8 +45,7 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
 
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        $cachedValue = $this->cache->getItem(ImageUtils::CACHE_KEY);
-        $props = $cachedValue->get();
+        $props = $this->cache->getItem(ImageUtils::CACHE_KEY)->get();
 
         $imgUrl = null;
         $data = null;

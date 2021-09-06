@@ -6,8 +6,8 @@
 
     <services >
         <defaults autoconfigure="true" autowire="true" />
-        <service id="image_converter.mappingprops" class="Onadrog\ImageConverterBundle\Mapping\Attribute\ImageUploadProperties"></service>
-<!--         <service alias="image_converter.mappingprops" id="Onadrog\ImageConverterBundle\Mapping\Attribute\ImageUploadProperties"></service> -->
-        <service id="image_converter.reader_annotation" class="Onadrog\ImageConverterBundle\Reader\AttributeReader" />
+        <service id="image_converter.mappingprops" class="Onadrog\ImageConverterBundle\Mapping\Attribute\ImageUploadProperties">
+        <argument key="$config">%image_converter%</argument>
+        </service>
     </services>
 </container>

@@ -65,5 +65,14 @@ class DatabaseTest extends WebTestCase
         $client = $this->createClient();
         $client->request('GET', '/form/solofile/1/edit');
         $this->assertInputValueSame('solo[file][alt]', 'A fixture image.');
+        $this->assertSelectorTextContains('img', '');
+    }
+
+    public function testDeleteFile()
+    {
+        $client = $this->createClient();
+        $client->request('POST', '/form/solofile/2/delete');
+        $this->assertFileDoesNotExist(self::UPLOAD_PATH.'JPG.webp');
+        $this->assertResponseRedirects('/');
     }
 }

@@ -5,11 +5,9 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <defaults autoconfigure="true" autowire="true"/>
-        <service id="image_converter.type" class="Onadrog\ImageConverterBundle\Type\ImageConverterType">
+        <service id="image_converter.type" class="Onadrog\ImageConverterBundle\Form\Type\ImageConverterType">
             <tag name="form.twig"/>
             <argument type="service" id="image_converter.subscriber"/>
-            <argument type="service" id="property_accessor"/>
-            <argument />
         </service>
     </services>
 </container>

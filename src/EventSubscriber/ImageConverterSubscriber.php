@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class ImageConverterSubscriber implements EventSubscriberInterface
 {
+    private const NAME_VAL = 'cache_image_converter_name_input';
+
     public function __construct(
         private array $config,
         private ImageUtils $imageUtils,
@@ -31,12 +33,7 @@ class ImageConverterSubscriber implements EventSubscriberInterface
         if (!$image instanceof UploadedFile) {
             return;
         }
-        $form = $event->getForm();
-        $class = $form->getRoot()->getData();
-        $property = $form->getName();
-
-        $cachedValues = $this->cache->getItem(ImageUtils::CACHE_KEY);
-        $prop = $cachedValues->get();
+        $prop = $this->cache->getItem(ImageUtils::CACHE_KEY)->get();
 
         $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
 
@@ -63,6 +60,18 @@ class ImageConverterSubscriber implements EventSubscriberInterface
         }
 
         $event->setData($data);
+
+        if ($this->config['delete_orphans']) {
+            $form = $event->getForm();
+            $cache_name = $this->cache->getItem(self::NAME_VAL);
+            $cache_name_val = $cache_name->get();
+            if ($data[$prop['name']] !== $cache_name_val &&
+            null !== $cache_name_val &&
+             file_exists($this->config['media_uploads_path'].$form[$prop['name']]->getData())
+             ) {
+                unlink($this->config['media_uploads_path'].$form[$prop['name']]->getData());
+            }
+        }
     }
 
     /**
@@ -108,11 +117,21 @@ class ImageConverterSubscriber implements EventSubscriberInterface
     {
         $form = $event->getForm();
         $this->cache->deleteItem(ImageUtils::CACHE_KEY);
+        $this->cache->deleteItem(self::NAME_VAL);
         $key = $form->get('slug')->getData();
         if ($form->isSubmitted() && $form->isValid()) {
             $image = $form->get('image_converter')->getData();
             $image->move($this->config['media_uploads_path'], $key);
         }
+    }
+
+    public function onFormPostSet(FormEvent $event): void
+    {
+        $form = $event->getForm();
+        $attributes = $this->cache->getItem(ImageUtils::CACHE_KEY)->get();
+        $cache_name = $this->cache->getItem(self::NAME_VAL);
+        $cache_name->set($form[$attributes['name']]->getData());
+        $this->cache->save($cache_name);
     }
 
     public static function getSubscribedEvents(): array
@@ -121,6 +140,7 @@ class ImageConverterSubscriber implements EventSubscriberInterface
             FormEvents::PRE_SUBMIT => 'onFormPreSubmit',
             FormEvents::PRE_SET_DATA => 'onFormPreSet',
             FormEvents::POST_SUBMIT => 'onFormPostSubmit',
+            FormEvents::POST_SET_DATA => 'onFormPostSet',
         ];
     }
 }

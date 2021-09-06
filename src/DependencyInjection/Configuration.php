@@ -27,6 +27,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('media_uploads_path')->defaultValue('%kernel.project_dir%/public/uploads/media')->cannotBeEmpty()->end()
                 ->enumNode('namer')->values(['default', 'uuid', 'mixed'])->defaultValue('defaut')->cannotBeEmpty()->end()
                 ->scalarNode('public_path')->defaultValue('/uploads/media')->cannotBeEmpty()->end()
+                ->booleanNode('delete_orphans')->defaultValue(true)->end()
                 ->integerNode('quality')->min(0)->max(100)->defaultValue(80)->end()
             ->end();
     }

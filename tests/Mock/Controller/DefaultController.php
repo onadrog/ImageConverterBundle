@@ -65,4 +65,15 @@ class DefaultController extends AbstractController
             'form' => $form,
         ]);
     }
+
+    #[Route(path: '/form/solofile/{id}/delete', name: 'solofile_detete')]
+    public function formSoloDelete($id): Response
+    {
+        $soloFile = $this->getDoctrine()->getRepository(SoloFile::class)->find($id);
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($soloFile);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('index', [], Response::HTTP_SEE_OTHER);
+    }
 }
