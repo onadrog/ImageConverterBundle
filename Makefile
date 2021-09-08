@@ -1,19 +1,14 @@
 SHELL := /bin/bash
 
-
 dcktestrun := docker-compose -f docker/docker-compose.yaml run --rm
-
-
 
 .PHONY: tests
 tests:
-#	$(dcktestrun) phptest tests/bin/console cache:clear
 	$(dcktestrun) phptest tests/bin/console doctrine:database:drop --force || true
 	$(dcktestrun) phptest tests/bin/console doctrine:database:create
 	$(dcktestrun) phptest tests/bin/console doctrine:migrations:migrate latest -n
 	$(dcktestrun) phptest tests/bin/console doctrine:fixtures:load -n
 	$(dcktestrun) phptest vendor/bin/simple-phpunit --debug -c . --coverage-html=coverage/
-	rm -rf public/uploads/media
 
 .PHONY: phpstan
 phpstan:
@@ -45,3 +40,11 @@ prog:
 .PHONY: console
 console: prog
 	@echo prog
+
+.PHONY: dockerbuild
+dockerbuild:
+	docker-compose -f docker/docker-compose.yaml build
+
+.PHONY: dockerrm
+dockerrm:
+	docker-compose -f docker/docker-compose.yaml down -v --rmi local
