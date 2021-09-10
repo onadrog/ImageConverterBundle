@@ -8,9 +8,12 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @author Sébastien Gordano <sebastien.gordano@gmail.com>
@@ -23,6 +26,7 @@ class ImageConverterSubscriber implements EventSubscriberInterface
         private array $config,
         private ImageUtils $imageUtils,
         private AdapterInterface $cache,
+        private ValidatorInterface $validatorInterface
     ) {
     }
 
@@ -36,6 +40,11 @@ class ImageConverterSubscriber implements EventSubscriberInterface
         $image = $data['image_converter'];
         if (!$image instanceof UploadedFile) {
             return;
+        }
+        // Constraints
+        if ($this->validatorInterface->validate($image, new File(['mimeTypes' => ['image/*']]))->count() > 0) {
+            $error_msg = new FormError('Invalid type file please upload a valid image.');
+            $event->getForm()->addError($error_msg);
         }
         $prop = $this->cache->getItem(ImageUtils::CACHE_KEY)->get();
 
@@ -118,6 +127,7 @@ class ImageConverterSubscriber implements EventSubscriberInterface
                 'label' => false,
                 'mapped' => false,
                 'required' => false,
+                'error_bubbling' => true,
                 'attr' => ['data-entity' => $attributes['entity'], 'data-relation' => $attributes['relation']],
             ]);
     }

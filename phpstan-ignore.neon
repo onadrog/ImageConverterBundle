@@ -4,5 +4,6 @@ parameters:
         - '#Access to an undefined property object::\$inversedBy.#'
         - '#Access to an undefined property object::\$mappedBy.#'
         - '#Match expression does not handle remaining value: mixed#'
+        - '#Call to function is_string\(\) with Symfony\\Bundle\\MakerBundle\\Util\\ClassSourceManipulator will always evaluate to false.#'
     excludePaths:
         - src/Command/Skeleton/*

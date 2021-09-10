@@ -56,6 +56,7 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
             $data = $form['image_converter']->getRoot()->getData();
         }
         if (
+            isset($props['slug']) &&
             $this->propertyAccessor->isReadable($data, $props['slug']) &&
             null !== $this->propertyAccessor->getValue($data, $props['slug'])
         ) {

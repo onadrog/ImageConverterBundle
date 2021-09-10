@@ -30,7 +30,8 @@
         "symfony/property-access": "^5.3",
         "symfony/cache": "^5.3",
         "doctrine/orm": "^2.9",
-        "doctrine/doctrine-bundle": "^2.4"
+        "doctrine/doctrine-bundle": "^2.4",
+        "symfony/validator": "^5.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
@@ -60,6 +61,13 @@
             "Onadrog\\ImageConverterBundle\\Tests\\": "tests",
             "Onadrog\\ImageConverterBundle\\Mock\\": "tests/Mock"
         }
+    },
+    "suggest": {
+        "symfony/maker-bundle": "Needed for command onadrog:make:entity",
+        "symfony/yaml": "Needed for command onadrog:dump:config"
+    },
+    "support": {
+        "wiki": "https://github.com/onadrog/ImageConverterBundle/wiki"
     },
     "minimum-stability": "stable"
 }

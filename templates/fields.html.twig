@@ -1,4 +1,5 @@
 {% block image_converter_widget %}
+	{{form_errors(form)}}
 	<div>
 		{{form_label(form.image_converter)}}
 		{{form_widget(form.image_converter)}} <br>

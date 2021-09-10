@@ -1,2 +1,9 @@
 * text=auto eol=lf
-tests/Mock/images/ export-ignore
+/tests export-ignore
+/.vscode export-ignore
+/docker export-ignore
+/.php-cs-fixer.php export-ignore
+/Makefile export-ignore
+/phpstan* export-ignore
+/.git* export-ignore
+/phpunit* export-ignore

@@ -19,7 +19,7 @@ class ImageTwigExtension extends AbstractExtension
     {
         return [
             new TwigFunction(
-                'image_converter_picture',
+                'image_converter_img',
                 [$this, 'addPicture'],
                 ['is_safe' => ['html']]
             ),
@@ -29,15 +29,12 @@ class ImageTwigExtension extends AbstractExtension
     public function addPicture(
         object $value,
         bool $lazyLoad = true,
-        string $classname = 'image_converter_picture'
+        string $classname = 'image_converter_img'
     ): string {
         return $this->env->render('image_converter_picture.html.twig', [
             'value' => $value,
             'lazyLoad' => $lazyLoad,
             'classname' => $classname,
         ]);
-        /* return <<<HTML
-        <picture class="$classname"><img src=$value.slug alt=$value.name width=$value.dimension.width height=$value.dimension.height/></picture>
-        HTML; */
     }
 }

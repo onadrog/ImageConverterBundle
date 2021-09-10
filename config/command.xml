@@ -16,6 +16,7 @@
         <service id="image_converter.maker" class="Onadrog\ImageConverterBundle\Command\ImageConverterMaker">
             <tag name="maker.command"/>
             <argument type="service" id="maker.entity_class_generator"/>
+            <argument type="service" id="maker.file_manager"/>
         </service>
     </services>
 </container>

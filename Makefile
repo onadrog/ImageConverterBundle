@@ -4,6 +4,7 @@ dcktestrun := docker-compose -f docker/docker-compose.yaml run --rm
 
 .PHONY: tests
 tests:
+	$(dcktestrun) phptest tests/bin/console cache:clear
 	$(dcktestrun) phptest tests/bin/console doctrine:database:drop --force || true
 	$(dcktestrun) phptest tests/bin/console doctrine:database:create
 	$(dcktestrun) phptest tests/bin/console doctrine:migrations:migrate latest -n
