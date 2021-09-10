@@ -49,7 +49,9 @@ final class ImageUtils
             'mixed' => str_replace('.', '-', uniqid($safeName.'-', true)),
         };
 
-        $finalSlug = $option['public_path'].$slug;
+        $path = $this->strAppendSlash($option['public_path']);
+
+        $finalSlug = $path.$slug;
 
         return ['slug' => $finalSlug, 'safename' => $slug];
     }
@@ -66,7 +68,6 @@ final class ImageUtils
 
     /**
      * Return the mapped class with the ImageUpload Attribute.
-     * TODO: cache array result.
      */
     public static function guessMappedClass(object $class, string $property): array
     {
@@ -153,5 +154,21 @@ final class ImageUtils
         }
 
         return $argsArray;
+    }
+
+    /**
+     * Check if the given config have '/' at start and end,
+     * append if not.
+     */
+    public function strAppendSlash(string $string): string
+    {
+        if (!str_ends_with($string, '/')) {
+            $string .= '/';
+        }
+        if (!str_starts_with($string, '/')) {
+            $string = '/'.$string;
+        }
+
+        return $string;
     }
 }

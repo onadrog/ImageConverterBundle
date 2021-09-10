@@ -26,6 +26,10 @@ class ImageConverterSubscriber implements EventSubscriberInterface
     ) {
     }
 
+    /**
+     * Get UploadedFile instance, convert to Webp format,
+     * Set inputs values based on ImageUploadProperties attribute.
+     */
     public function onFormPreSubmit(FormEvent $event): void
     {
         $data = $event->getData();
@@ -37,6 +41,7 @@ class ImageConverterSubscriber implements EventSubscriberInterface
 
         $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
 
+        //Sanitize the image name to be slugy friendly
         $namerOptions = ['namer' => $this->config['namer'], 'public_path' => $this->config['public_path']];
         $slug = $this->imageUtils->namer($originalName, $namerOptions);
 
@@ -46,12 +51,14 @@ class ImageConverterSubscriber implements EventSubscriberInterface
         $dimension = ['height' => $imageHeight, 'width' => $imageWidth];
 
         $imagePath = $image->getPathName();
+        // ToDo: V2 will use Js to convert, for now just return the original file
         if (!empty(get_extension_funcs('gd'))) {
             $callFunction = $this->imageUtils->createGdImg($image->guessExtension(), $imagePath);
             imagewebp($callFunction, $imagePath, $this->config['quality']);
             imagedestroy($callFunction);
         }
 
+        // Set data to the given mapped inputs
         $data[$prop['name']] = $slug['safename'].'.'.$image->guessExtension();
         $data[$prop['slug']] = $slug['slug'].'.'.$image->guessExtension();
         $data[$prop['dimension']] = json_encode($dimension);
@@ -61,6 +68,7 @@ class ImageConverterSubscriber implements EventSubscriberInterface
 
         $event->setData($data);
 
+        // remove older file for the edit action
         if ($this->config['delete_orphans']) {
             $form = $event->getForm();
             $cache_name = $this->cache->getItem(self::NAME_VAL);
@@ -81,7 +89,6 @@ class ImageConverterSubscriber implements EventSubscriberInterface
     {
         $form = $event->getForm();
         $class = $form->getRoot()->getData();
-        $prop = $form->getName();
         $attributes = ImageUtils::guessMappedClass($class, $form->getName());
 
         $cachedAttr = $this->cache->getItem(ImageUtils::CACHE_KEY);
@@ -108,23 +115,35 @@ class ImageConverterSubscriber implements EventSubscriberInterface
             ])
             ->add('image_converter', FileType::class, [
                 'multiple' => false,
-                'label' => false, 'mapped' => false,
+                'label' => false,
+                'mapped' => false,
+                'required' => false,
                 'attr' => ['data-entity' => $attributes['entity'], 'data-relation' => $attributes['relation']],
             ]);
     }
 
+    /**
+     * Verify form,
+     * Delete cache items,
+     * Move image to the given config path.
+     */
     public function onFormPostSubmit(FormEvent $event): void
     {
         $form = $event->getForm();
         $this->cache->deleteItem(ImageUtils::CACHE_KEY);
         $this->cache->deleteItem(self::NAME_VAL);
         $key = $form->get('slug')->getData();
-        if ($form->isSubmitted() && $form->isValid()) {
-            $image = $form->get('image_converter')->getData();
-            $image->move($this->config['media_uploads_path'], $key);
+        $image = $form->get('image_converter')->getData();
+        if ($form->isSubmitted() && $form->isValid() && $image) {
+            $path = $this->imageUtils->strAppendSlash($this->config['media_uploads_path']);
+            $image->move($path, $key);
         }
     }
 
+    /**
+     * Create a cache item of the 'name' form input value
+     * used to verify changes on edit action.
+     */
     public function onFormPostSet(FormEvent $event): void
     {
         $form = $event->getForm();

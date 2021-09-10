@@ -1,6 +1,8 @@
 parameters:
     ignoreErrors:
-    - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children\(\).#'
-    - '#Access to an undefined property object::\$inversedBy.#'
-    - '#Access to an undefined property object::\$mappedBy.#'
-    - '#Match expression does not handle remaining value: mixed#'
+        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children\(\).#'
+        - '#Access to an undefined property object::\$inversedBy.#'
+        - '#Access to an undefined property object::\$mappedBy.#'
+        - '#Match expression does not handle remaining value: mixed#'
+    excludePaths:
+        - src/Command/Skeleton/*

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services
+        https://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services >
+        <defaults autoconfigure="true" autowire="true" />
+        <service id="image_converter.command_config" class="Onadrog\ImageConverterBundle\Command\ImageConverterCommand">
+            <tag name="console.command"/>
+            <argument>%image_converter%</argument>
+        </service>
+        <service id="image_converter.command_dump_config" class="Onadrog\ImageConverterBundle\Command\ImageConverterDumpConf">
+            <tag name="console.command"/>
+            <argument>%image_converter%</argument>
+        </service>
+        <service id="image_converter.maker" class="Onadrog\ImageConverterBundle\Command\ImageConverterMaker">
+            <tag name="maker.command"/>
+            <argument type="service" id="maker.entity_class_generator"/>
+        </service>
+    </services>
+</container>
