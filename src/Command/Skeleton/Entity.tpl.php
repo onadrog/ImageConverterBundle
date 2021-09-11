@@ -30,6 +30,11 @@ class <?php echo $class_name."\n"; ?>
     private $<?php echo $dimension; ?> = [];
 
     /**
+    * @ORM\Column(type="json")
+    */
+    private $mimeTypes = [];
+
+    /**
     * @ORM\Column(type="string", length=255)
     */
     private $<?php echo $slug; ?>;
@@ -39,7 +44,7 @@ class <?php echo $class_name."\n"; ?>
     */
     private $<?php echo $alt; ?>;
 
-    #[Onadrog\ImageUploadProperties(name: '<?php echo $name; ?>', slug: '<?php echo $slug; ?>', alt: '<?php echo $alt; ?>', dimension: '<?php echo $dimension; ?>')]
+    #[Onadrog\ImageUploadProperties(name: '<?php echo $name; ?>', slug: '<?php echo $slug; ?>', alt: '<?php echo $alt; ?>', dimension: '<?php echo $dimension; ?>', mimeTypes: 'mimeTypes')]
     private $file;
 
     public function getId(): ?int
@@ -55,6 +60,10 @@ class <?php echo $class_name."\n"; ?>
     public function get<?php echo ucfirst($dimension); ?>(): ?array
     {
         return $this-><?php echo $dimension; ?>;
+    }
+    public function getMimeTypes(): ?array
+    {
+        return $this->mimeTypes;
     }
 
     public function get<?php echo ucfirst($slug); ?>(): ?string
@@ -81,6 +90,11 @@ class <?php echo $class_name."\n"; ?>
     public function set<?php echo ucfirst($dimension); ?>(array $<?php echo $dimension; ?>): self
     {
         $this-><?php echo $dimension; ?> = $<?php echo $dimension; ?>;
+        return $this;
+    }
+    public function setMimeTypes(array $mimeTypes): self
+    {
+        $this->mimeTypes = $mimeTypes;;
         return $this;
     }
 

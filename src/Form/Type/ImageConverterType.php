@@ -60,13 +60,18 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
             $this->propertyAccessor->isReadable($data, $props['slug']) &&
             null !== $this->propertyAccessor->getValue($data, $props['slug'])
         ) {
-            $imgUrl = $this->propertyAccessor->getValue($data, $props['slug']);
+            $slug = $this->propertyAccessor->getValue($data, $props['slug']);
+            $mime = $this->propertyAccessor->getValue($data, $props['mimeTypes']);
             $imgDimension = $this->propertyAccessor->getValue($data, $props['dimension']);
             $division = $imgDimension['width'] >= 600 ? 4 : 2;
             $view->vars['width'] = $imgDimension['width'] / $division;
             $view->vars['height'] = $imgDimension['height'] / $division;
+            $imgUrl = $slug.'.webp';
+            $view->vars['original'] = false;
+            if (count($mime) > 1) {
+                $view->vars['original'] = true;
+            }
         }
-
         $view->vars['image_url'] = $imgUrl;
     }
 
@@ -84,10 +89,10 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
             return;
         }
         foreach ($form as $f) {
-            if ('image_converter' !== $f->getName()) {
+            if ('image_converter' !== $f->getName() && 'original_file' !== $f->getName()) {
                 if (
                     isset($f->getConfig()->getOption('attr')['data-type']) &&
-                    'dimension' === $f->getConfig()->getOption('attr')['data-type']
+                    'json_array' === $f->getConfig()->getOption('attr')['data-type']
                 ) {
                     $val = $this->propertyAccessor->getValue($viewData, $f->getName());
                     $f->setData(json_encode($val));
@@ -111,13 +116,19 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
         }
 
         foreach ($form as $f) {
-            if ('image_converter' !== $f->getName()) {
+            if ('image_converter' !== $f->getName() && 'original_file' !== $f->getName()) {
                 if (
                     isset($f->getConfig()->getOption('attr')['data-type']) &&
-                    'dimension' === $f->getConfig()->getOption('attr')['data-type']
-                ) {
-                    $data[] = json_decode($f->getData(), true);
-                    $this->propertyAccessor->setValue($viewData, $f->getName(), $data[0]);
+                    'json_array' === $f->getConfig()->getOption('attr')['data-type']
+                    ) {
+                    $dataAtrtributes = $f->getConfig()->getOption('attr')['data-prop'];
+                    $data = json_decode($f->getData(), true);
+                    if ('dimension' === $dataAtrtributes) {
+                        $this->propertyAccessor->setValue($viewData, $f->getName(), $data['dimension']);
+                    }
+                    if ('mimes' === $dataAtrtributes) {
+                        $this->propertyAccessor->setValue($viewData, $f->getName(), $data['mimes']);
+                    }
                 } else {
                     $this->propertyAccessor->setValue($viewData, $f->getName(), $f->getData());
                 }

@@ -3,6 +3,7 @@
 namespace Onadrog\ImageConverterBundle\Mock\Controller;
 
 use Onadrog\ImageConverterBundle\Mock\Entity\Entity\SoloFile;
+use Onadrog\ImageConverterBundle\Mock\Entity\Repository\SoloFileRepository;
 use Onadrog\ImageConverterBundle\Mock\Type\MockType;
 use Onadrog\ImageConverterBundle\Mock\Type\SoloType;
 use ReflectionClass;
@@ -17,9 +18,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class DefaultController extends AbstractController
 {
     #[Route(path: '/', name: 'index')]
-    public function index(): Response
+    public function index(SoloFileRepository $repo): Response
     {
-        $soloFile = $this->getDoctrine()->getRepository(SoloFile::class)->find(1);
+        $soloFile = $repo->find(1);
 
         return $this->render('index.html.twig', [
             'val' => $soloFile,

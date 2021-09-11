@@ -77,9 +77,6 @@ final class ImageUtils
         // ImageUpload Attribute not found on Entity
         if (empty($attribute)) {
             $prop = $Refclass->getProperty($property);
-            /*  $reader = new AnnotationReader();
-            //$reader = new AttributeReader(); <-- Waiting for PR to be merged https://github.com/symfony/maker-bundle/pull/920
-            $annotation = $reader->getPropertyAnnotations($prop); */
             $annotation = self::readProperty($prop);
             foreach ($annotation as $anno) {
                 if (isset($anno->targetEntity)) {

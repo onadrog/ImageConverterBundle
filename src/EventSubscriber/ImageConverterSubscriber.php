@@ -11,8 +11,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\File as FileConstraints;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -26,7 +27,7 @@ class ImageConverterSubscriber implements EventSubscriberInterface
         private array $config,
         private ImageUtils $imageUtils,
         private AdapterInterface $cache,
-        private ValidatorInterface $validatorInterface
+        private ValidatorInterface $validatorInterface,
     ) {
     }
 
@@ -42,41 +43,54 @@ class ImageConverterSubscriber implements EventSubscriberInterface
             return;
         }
         // Constraints
-        if ($this->validatorInterface->validate($image, new File(['mimeTypes' => ['image/*']]))->count() > 0) {
+        if ($this->validatorInterface->validate($image,
+        new FileConstraints(['mimeTypes' => ['image/*']]))->count() > 0) {
             $error_msg = new FormError('Invalid type file please upload a valid image.');
             $event->getForm()->addError($error_msg);
         }
         $prop = $this->cache->getItem(ImageUtils::CACHE_KEY)->get();
-
         $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
 
         //Sanitize the image name to be slugy friendly
         $namerOptions = ['namer' => $this->config['namer'], 'public_path' => $this->config['public_path']];
         $slug = $this->imageUtils->namer($originalName, $namerOptions);
 
-        $imagesize = getimagesize($image->getPathName());
+        $imagePath = $image->getPathName();
+
+        $imagesize = getimagesize($imagePath);
         list($imageWidth, $imageHeight) = $imagesize;
 
         $dimension = ['height' => $imageHeight, 'width' => $imageWidth];
+        $mimeTypes = [];
 
-        $imagePath = $image->getPathName();
-        // ToDo: V2 will use Js to convert, for now just return the original file
-        if (!empty(get_extension_funcs('gd'))) {
+        if ($this->config['keep_original']) {
+            $name = $slug['safename'].'.'.$image->guessExtension();
+            $temp = tempnam('/tmp', 'foo');
+            copy($imagePath, $temp);
+            $mimeTypes = [$image->guessExtension()];
+            $original_copy = new File($temp);
+            $original_copy->originalName = $name;
+            $data['original_file'] = $original_copy;
+        }
+        // Point of no return. At this point the image become a webp file
+        if (!empty(get_extension_funcs('gd')) && !$this->config['use_js']) {
             $callFunction = $this->imageUtils->createGdImg($image->guessExtension(), $imagePath);
             imagewebp($callFunction, $imagePath, $this->config['quality']);
+            array_unshift($mimeTypes, $image->guessExtension());
             imagedestroy($callFunction);
         }
 
         // Set data to the given mapped inputs
+
         $data[$prop['name']] = $slug['safename'].'.'.$image->guessExtension();
-        $data[$prop['slug']] = $slug['slug'].'.'.$image->guessExtension();
-        $data[$prop['dimension']] = json_encode($dimension);
+        $data[$prop['slug']] = $slug['slug'];
+        $data[$prop['dimension']] = json_encode(['dimension' => $dimension]);
+        $data[$prop['mimeTypes']] = json_encode(['mimes' => $mimeTypes]);
         if ('' === $data[$prop['alt']]) {
             $data[$prop['alt']] = $slug['safename'];
         }
 
         $event->setData($data);
-
         // remove older file for the edit action
         if ($this->config['delete_orphans']) {
             $form = $event->getForm();
@@ -115,21 +129,33 @@ class ImageConverterSubscriber implements EventSubscriberInterface
             ->add($attributes['dimension'], HiddenType::class, [
                 'mapped' => true,
                 'data_class' => null,
-                'attr' => ['data-type' => 'dimension'],
+                'attr' => ['data-type' => 'json_array', 'data-prop' => 'dimension'],
             ])
             ->add($attributes['alt'], TextType::class, [
                 'mapped' => true,
                 'required' => false,
                 'data_class' => null,
             ])
+            ->add($attributes['mimeTypes'], HiddenType::class, ['mapped' => true,
+             'data_class' => null,
+             'attr' => ['data-type' => 'json_array', 'data-prop' => 'mimes'],
+             ])
             ->add('image_converter', FileType::class, [
                 'multiple' => false,
                 'label' => false,
                 'mapped' => false,
                 'required' => false,
                 'error_bubbling' => true,
-                'attr' => ['data-entity' => $attributes['entity'], 'data-relation' => $attributes['relation']],
+                'attr' => [
+                    'data-entity' => $attributes['entity'],
+                    'data-relation' => $attributes['relation'], '
+                    data-qual' => $this->config['quality'],
+                ],
             ]);
+
+        if ($this->config['keep_original']) {
+            $form->add('original_file', FileType::class, ['mapped' => false, 'required' => false, 'multiple' => false]);
+        }
     }
 
     /**
@@ -139,13 +165,21 @@ class ImageConverterSubscriber implements EventSubscriberInterface
      */
     public function onFormPostSubmit(FormEvent $event): void
     {
+        $prop = $this->cache->getItem(ImageUtils::CACHE_KEY)->get();
+
         $form = $event->getForm();
-        $this->cache->deleteItem(ImageUtils::CACHE_KEY);
         $this->cache->deleteItem(self::NAME_VAL);
-        $key = $form->get('slug')->getData();
+        $key = $form->get($prop['name'])->getData();
+        $this->cache->deleteItem(ImageUtils::CACHE_KEY);
         $image = $form->get('image_converter')->getData();
         if ($form->isSubmitted() && $form->isValid() && $image) {
             $path = $this->imageUtils->strAppendSlash($this->config['media_uploads_path']);
+            if ($this->config['keep_original']) {
+                /** @var File */
+                $original_file = $form->get('original_file')->getData();
+                $original_file->move($path, $original_file->originalName);
+            }
+            /* @var UploadedFile $image*/
             $image->move($path, $key);
         }
     }

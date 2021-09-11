@@ -94,6 +94,7 @@ class ImageConverterMaker extends AbstractMaker
                 $manipulator->addProperty('file', []);
                 $manipulator->addGetter('file', null, true);
                 $manipulator->addSetter('file', null, true);
+                $manipulator->addEntityField('addEntityField', ['type' => 'json']);
             }
 
             foreach ($fileManagerOperations as $path => $manipulatorOrMessage) {
