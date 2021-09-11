@@ -20,6 +20,6 @@ class TwigExtTest extends TestCase
     {
         $mock = $this->createMock(Environment::class);
         $twig = new ImageTwigExtension($mock);
-        $this->assertSame('image_converter_picture', $twig->getFunctions()[0]->getName());
+        $this->assertSame('image_converter_img', $twig->getFunctions()[0]->getName());
     }
 }
