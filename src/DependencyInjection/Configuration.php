@@ -28,6 +28,8 @@ class Configuration implements ConfigurationInterface
                 ->enumNode('namer')->values(['default', 'uuid', 'mixed'])->defaultValue('default')->cannotBeEmpty()->end()
                 ->scalarNode('public_path')->defaultValue('/uploads/media')->cannotBeEmpty()->end()
                 ->booleanNode('delete_orphans')->defaultValue(true)->end()
+                ->booleanNode('keep_original')->defaultValue(false)->end()
+                ->booleanNode('use_js')->defaultValue(false)->end()
                 ->integerNode('quality')->min(0)->max(100)->defaultValue(80)->end()
             ->end();
     }

@@ -1,1 +1,15 @@
-<img class="{{classname}}" src="{{value.slug}}" alt="{{value.alt}}" height="{{value.dimension.height}}" width="{{value.dimension.width}}" {% if (lazyLoad) %} loading="lazy" {% endif %}/>
+{% for values in value %}
+	{% if attribute(values, props.mimeTypes)|length > 1 %}
+		<picture>
+			{% for prop in attribute(values, props.mimeTypes) %}
+				{% if prop is same as "webp" %}
+					<source srcset="{{attribute(values, props.slug)}}.{{prop}}" type="image/{{prop}}">
+				{% else %}
+					<img src="{{attribute(values, props.slug)}}.{{prop}}" alt="{{attribute(values, props.alt)}}" height="{{attribute(values, props.dimension).height}}" width="{{attribute(values, props.dimension).width}}" {% if (lazyLoad) %} loading="lazy" {% endif %} class="{{classname}}">
+				{% endif %}
+			{% endfor %}
+		</picture>
+	{% else %}
+		<img src="{{attribute(values, props.slug)}}.{{attribute(values, props.mimeTypes)|join()}}" alt="{{attribute(values, props.alt)}}" height="{{attribute(values, props.dimension).height}}" width="{{attribute(values, props.dimension).width}}" {% if (lazyLoad) %} loading="lazy" {% endif %} class="{{classname}}">
+	{% endif %}
+{% endfor %}

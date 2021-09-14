@@ -1,15 +1,18 @@
 {% block image_converter_widget %}
 	{{form_errors(form)}}
 	<div>
-		{{form_label(form.image_converter)}}
-		{{form_widget(form.image_converter)}} <br>
-		{{form_label(form.alt)}}
-		{{form_widget(form.alt)}}
-		{{form_widget(form.name)}}
-		{{form_widget(form.slug)}}
-		{{form_widget(form.dimension)}}
+		<br>
+		{% for fields in form %}
+			{% if (fields.vars.name is not same as 'original_file' and fields.vars.block_prefixes[1] is not same as 'hidden') %}
+				{{form_label(fields)}}
+				{{form_widget(fields)}}<br>
+			{% endif %}
+		{% endfor %}
 		{% if image_url is not null %}
 			<img src="{{ image_url }}" width="{{ width }}" height="{{ height }}"/>
+			{% if original %}
+				The original file also exists.
+			{% endif %}
 		</div>
 	{% endif %}
 {% endblock %}

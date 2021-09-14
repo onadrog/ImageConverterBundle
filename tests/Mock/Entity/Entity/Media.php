@@ -38,11 +38,16 @@ class Media
     private $dimension = [];
 
     /**
+     * @ORM\Column(type="json")
+     */
+    private $mimeTypes = [];
+
+    /**
      * @ORM\OneToMany(targetEntity=Product::class, mappedBy="media")
      */
     private $products;
 
-    #[ImageUploadProperties(name: 'name', slug: 'slug', dimension: 'dimension', alt: 'alt')]
+    #[ImageUploadProperties(name: 'name', slug: 'slug', dimension: 'dimension', alt: 'alt', mimeTypes: 'mimeTypes')]
     private $file;
 
     /**
@@ -154,6 +159,26 @@ class Media
     public function setAlt(string $alt): self
     {
         $this->alt = $alt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of mimeTypes.
+     */
+    public function getMimeTypes()
+    {
+        return $this->mimeTypes;
+    }
+
+    /**
+     * Set the value of mimeTypes.
+     *
+     * @return self
+     */
+    public function setMimeTypes($mimeTypes)
+    {
+        $this->mimeTypes = $mimeTypes;
 
         return $this;
     }

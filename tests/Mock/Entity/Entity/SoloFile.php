@@ -35,13 +35,18 @@ class SoloFile
      */
     private $slug;
 
-    #[ImageUploadProperties(name: 'name', slug: 'slug', dimension: 'dimension', alt: 'alt')]
+    #[ImageUploadProperties(name: 'name', slug: 'slug', dimension: 'dimension', alt: 'alt', mimeTypes: 'mimeTypes')]
     private $file;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
     private $alt;
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $mimeTypes = [];
 
     public function getId(): ?int
     {
@@ -112,6 +117,18 @@ class SoloFile
     public function setAlt(string $alt): self
     {
         $this->alt = $alt;
+
+        return $this;
+    }
+
+    public function getMimeTypes(): ?array
+    {
+        return $this->mimeTypes;
+    }
+
+    public function setMimeTypes(array $mimeTypes): self
+    {
+        $this->mimeTypes = $mimeTypes;
 
         return $this;
     }

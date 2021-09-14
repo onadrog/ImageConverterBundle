@@ -47,3 +47,5 @@ image_converter:
   namer: "default" # Possible values : "default", "uuid", "mixed"
   quality: 80
   public_path: "/public/uploads/media/"
+  keep_original: true
+  delete_orphans: true

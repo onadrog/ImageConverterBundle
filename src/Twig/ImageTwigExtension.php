@@ -2,6 +2,7 @@
 
 namespace Onadrog\ImageConverterBundle\Twig;
 
+use Onadrog\ImageConverterBundle\Service\ImageUtils;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -27,14 +28,24 @@ class ImageTwigExtension extends AbstractExtension
     }
 
     public function addPicture(
-        object $value,
+        array|object $value,
         bool $lazyLoad = true,
-        string $classname = 'image_converter_img'
+        string $classname = 'image_converter_img',
+        string $property = 'file'
     ): string {
-        return $this->env->render('image_converter_picture.html.twig', [
+        if (!is_array($value)) {
+            $value = [$value];
+        }
+        foreach ($value as $obj) {
+            $props = ImageUtils::guessMappedClass($obj, $property);
+            $render = $this->env->render('@ImageConverter/image_converter_picture.html.twig', [
+            'props' => $props,
             'value' => $value,
             'lazyLoad' => $lazyLoad,
             'classname' => $classname,
-        ]);
+            ]);
+        }
+
+        return $render;
     }
 }
