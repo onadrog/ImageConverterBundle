@@ -44,10 +44,15 @@ class Foo
      * @ORM\Column(type="json")
      */
     private ?array $fileDimension = [];
+    
+     /**
+     * @ORM\Column(type="json")
+     */
+    private ?array $mimeTypes = [];
 
     private  $fileAlt;
 
-    #[Onadrog\ImageUploadProperties(name: 'fileName', slug: 'fileSlug', alt: 'fileAlt', dimension: 'fileDimension')]
+    #[Onadrog\ImageUploadProperties(name: 'fileName', slug: 'fileSlug', alt: 'fileAlt', dimension: 'fileDimension', mimeTypes: 'mimeTypes')]
     private $file;
 }
 ```
@@ -95,6 +100,8 @@ image_converter:
   quality: 80
   public_path: "/uploads/media/"
   remove_orphans: true
+  keep_original: false
+  use_js: false
 ```
 
 ## Console commands:

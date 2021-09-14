@@ -1,15 +1,13 @@
-{% for values in value %}
-	{% if attribute(values, props.mimeTypes)|length > 1 %}
-		<picture>
-			{% for prop in attribute(values, props.mimeTypes) %}
-				{% if prop is same as "webp" %}
-					<source srcset="{{attribute(values, props.slug)}}.{{prop}}" type="image/{{prop}}">
-				{% else %}
-					<img src="{{attribute(values, props.slug)}}.{{prop}}" alt="{{attribute(values, props.alt)}}" height="{{attribute(values, props.dimension).height}}" width="{{attribute(values, props.dimension).width}}" {% if (lazyLoad) %} loading="lazy" {% endif %} class="{{classname}}">
-				{% endif %}
-			{% endfor %}
-		</picture>
-	{% else %}
-		<img src="{{attribute(values, props.slug)}}.{{attribute(values, props.mimeTypes)|join()}}" alt="{{attribute(values, props.alt)}}" height="{{attribute(values, props.dimension).height}}" width="{{attribute(values, props.dimension).width}}" {% if (lazyLoad) %} loading="lazy" {% endif %} class="{{classname}}">
-	{% endif %}
-{% endfor %}
+{% if attribute(value, props.mimeTypes)|length > 1 %}
+	<picture>
+		{% for prop in attribute(value, props.mimeTypes) %}
+			{% if prop is same as "webp" %}
+				<source srcset="{{attribute(value, props.slug)}}.{{prop}}" type="image/{{prop}}">
+			{% else %}
+				<img src="{{attribute(value, props.slug)}}.{{prop}}" alt="{{attribute(value, props.alt)}}" height="{{attribute(value, props.dimension).height}}" width="{{attribute(value, props.dimension).width}}" {% if (lazyLoad) %} loading="lazy" {% endif %} class="{{classname}}">
+			{% endif %}
+		{% endfor %}
+	</picture>
+{% else %}
+	<img src="{{attribute(value, props.slug)}}.{{attribute(value, props.mimeTypes)|join()}}" alt="{{attribute(value, props.alt)}}" height="{{attribute(value, props.dimension).height}}" width="{{attribute(value, props.dimension).width}}" {% if (lazyLoad) %} loading="lazy" {% endif %} class="{{classname}}">
+{% endif %}

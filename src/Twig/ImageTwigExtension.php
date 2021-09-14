@@ -33,19 +33,13 @@ class ImageTwigExtension extends AbstractExtension
         string $classname = 'image_converter_img',
         string $property = 'file'
     ): string {
-        if (!is_array($value)) {
-            $value = [$value];
-        }
-        foreach ($value as $obj) {
-            $props = ImageUtils::guessMappedClass($obj, $property);
-            $render = $this->env->render('@ImageConverter/image_converter_picture.html.twig', [
+        $props = ImageUtils::guessMappedClass($value, $property);
+
+        return $this->env->render('@ImageConverter/image_converter_picture.html.twig', [
             'props' => $props,
             'value' => $value,
             'lazyLoad' => $lazyLoad,
             'classname' => $classname,
             ]);
-        }
-
-        return $render;
     }
 }
