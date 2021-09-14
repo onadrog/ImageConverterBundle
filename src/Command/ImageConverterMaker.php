@@ -86,16 +86,23 @@ class ImageConverterMaker extends AbstractMaker
                         $manipulator->addEntityField($value, ['type' => 'string', 'length' => 150]);
                     }
                 }
-
-                /*
-                 * Waiting for attribute support
-                 * https://github.com/symfony/maker-bundle/pull/920
-                 */
-                $manipulator->addProperty('file', []);
-                $manipulator->addGetter('file', null, true);
-                $manipulator->addSetter('file', null, true);
-                $manipulator->addEntityField('addEntityField', ['type' => 'json']);
+            } else {
+                foreach ($inputArray as $key => $value) {
+                    if ('dimension' === $key) {
+                        $manipulator->addEntityField($value, ['type' => 'json']);
+                    } else {
+                        $manipulator->addEntityField($value, ['type' => 'string', 'length' => 150]);
+                    }
+                }
             }
+            /*
+             * Waiting for attribute support
+             * https://github.com/symfony/maker-bundle/pull/920
+             */
+            $manipulator->addProperty('file', []);
+            $manipulator->addGetter('file', null, true);
+            $manipulator->addSetter('file', null, true);
+            $manipulator->addEntityField('mimeTypes', ['type' => 'json']);
 
             foreach ($fileManagerOperations as $path => $manipulatorOrMessage) {
                 if (\is_string($manipulatorOrMessage)) {
@@ -104,12 +111,14 @@ class ImageConverterMaker extends AbstractMaker
                     $this->fileManager->dumpFile($path, $manipulatorOrMessage->getSourceCode());
                 }
             }
+            $io->text([
+                 'Next: Properties are added but for now the maker-bundle doesn\'t support attributes annotations you have to <fg=red>add them mannualy</> see https://github.com/onadrog/ImageConverterBundle/wiki/usage',
+                '',
+                 ]);
         }
 
         $this->writeSuccessMessage($io);
         $io->text([
-            'Next: Properties are added but for now the maker-bundle doesn\'t support attributes annotations you have to <fg=red>add them mannualy</> see https://github.com/onadrog/ImageConverterBundle/wiki/usage',
-                '',
             'Next: Add more fields later manually or by running <info>php bin/console make:entity</info>',
             'Next: When you\'re ready, create a migration with <info>php bin/console make:migration</info>',
             '',
