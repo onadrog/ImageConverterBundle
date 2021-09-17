@@ -7,3 +7,6 @@
 /phpstan* export-ignore
 /.git* export-ignore
 /phpunit* export-ignore
+/packages.json export-ignore
+/webpack.config.js export-ignore
+/assets export-ignore

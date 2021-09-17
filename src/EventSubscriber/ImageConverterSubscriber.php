@@ -37,10 +37,17 @@ class ImageConverterSubscriber implements EventSubscriberInterface
      */
     public function onFormPreSubmit(FormEvent $event): void
     {
+        $isWebp = false;
         $data = $event->getData();
         $image = $data['image_converter'];
         if (!$image instanceof UploadedFile) {
             return;
+        }
+        $mimeTypes = [];
+
+        if ('webp' === $image->guessExtension()) {
+            $isWebp = true;
+            $mimeTypes = [$image->guessExtension()];
         }
         // Constraints
         if ($this->validatorInterface->validate($image,
@@ -61,9 +68,8 @@ class ImageConverterSubscriber implements EventSubscriberInterface
         list($imageWidth, $imageHeight) = $imagesize;
 
         $dimension = ['height' => $imageHeight, 'width' => $imageWidth];
-        $mimeTypes = [];
 
-        if ($this->config['keep_original']) {
+        if ($this->config['keep_original'] && !$this->config['use_js']) {
             $name = $slug['safename'].'.'.$image->guessExtension();
             $temp = tempnam('/tmp', 'foo');
             copy($imagePath, $temp);
@@ -71,9 +77,17 @@ class ImageConverterSubscriber implements EventSubscriberInterface
             $original_copy = new File($temp);
             $original_copy->originalName = $name;
             $data['original_file'] = $original_copy;
+        } else {
+            /** @var UploadedFile */
+            $original = $data['original_file'];
+            $file = new File($original->getPathname());
+            $name = $slug['safename'].'.'.$original->guessExtension();
+            $file->originalName = $name;
+            $data['original_file'] = $file;
+            array_push($mimeTypes, $original->guessExtension());
         }
         // Point of no return. At this point the image become a webp file
-        if (!empty(get_extension_funcs('gd')) && !$this->config['use_js']) {
+        if (!empty(get_extension_funcs('gd')) && !$this->config['use_js'] && !$isWebp) {
             $callFunction = $this->imageUtils->createGdImg($image->guessExtension(), $imagePath);
             imagewebp($callFunction, $imagePath, $this->config['quality']);
             array_unshift($mimeTypes, $image->guessExtension());
@@ -113,7 +127,6 @@ class ImageConverterSubscriber implements EventSubscriberInterface
         $form = $event->getForm();
         $class = $form->getRoot()->getData();
         $attributes = ImageUtils::guessMappedClass($class, $form->getName());
-
         $cachedAttr = $this->cache->getItem(ImageUtils::CACHE_KEY);
         $cachedAttr->set($attributes);
         $this->cache->save($cachedAttr);
@@ -135,6 +148,7 @@ class ImageConverterSubscriber implements EventSubscriberInterface
                 'mapped' => true,
                 'required' => false,
                 'data_class' => null,
+                'attr' => ['data-name' => 'alt'],
             ])
             ->add($attributes['mimeTypes'], HiddenType::class, ['mapped' => true,
              'data_class' => null,
@@ -148,8 +162,11 @@ class ImageConverterSubscriber implements EventSubscriberInterface
                 'error_bubbling' => true,
                 'attr' => [
                     'data-entity' => $attributes['entity'],
-                    'data-relation' => $attributes['relation'], '
-                    data-qual' => $this->config['quality'],
+                    'data-relation' => $attributes['relation'],
+                    'data-qual' => $this->config['quality'],
+                    'data-name' => 'image_converter',
+                    'accept' => 'image/*',
+                    'data-prop' => $attributes['property'],
                 ],
             ]);
 
@@ -179,7 +196,7 @@ class ImageConverterSubscriber implements EventSubscriberInterface
                 $original_file = $form->get('original_file')->getData();
                 $original_file->move($path, $original_file->originalName);
             }
-            /* @var UploadedFile $image*/
+            /* @var UploadedFile $image */
             $image->move($path, $key);
         }
     }

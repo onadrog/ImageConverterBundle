@@ -18,5 +18,6 @@
             <argument type="service" id="maker.entity_class_generator"/>
             <argument type="service" id="maker.file_manager"/>
         </service>
+        <service id="image_converter.command_check" class="Onadrog\ImageConverterBundle\Command\ImageConverterCheck"/>
     </services>
 </container>

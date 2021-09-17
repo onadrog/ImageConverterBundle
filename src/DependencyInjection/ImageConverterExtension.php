@@ -23,6 +23,11 @@ class ImageConverterExtension extends Extension
         foreach ($files as $loads) {
             $loader->load($loads);
         }
+        if (!extension_loaded('gd')) {
+            $configs['use_js'] = true;
+        } else {
+            $configs['use_js'] = false;
+        }
         $container->setParameter('image_converter', $configs);
     }
 }

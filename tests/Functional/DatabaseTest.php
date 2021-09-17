@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class DatabaseTest extends WebTestCase
 {
-    private const UPLOAD_PATH = 'public/uploads/media/';
+    private const UPLOAD_PATH = 'tests/uploads/media/';
 
     private function getClientForm(string $fileName, string $className, string $property)
     {

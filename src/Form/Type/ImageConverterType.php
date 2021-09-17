@@ -22,7 +22,8 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
     public function __construct(
         private ImageConverterSubscriber $imageConverterSubscriber,
         private PropertyAccessorInterface $propertyAccessor,
-        private AdapterInterface $cache
+        private AdapterInterface $cache,
+        private array $config
     ) {
     }
 
@@ -72,6 +73,7 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
                 $view->vars['original'] = true;
             }
         }
+        $view->vars['use_js'] = $this->config['use_js'];
         $view->vars['image_url'] = $imgUrl;
     }
 

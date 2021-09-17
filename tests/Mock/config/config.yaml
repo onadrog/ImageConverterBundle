@@ -43,9 +43,9 @@ maker:
   root_namespace: 'Onadrog\ImageConverterBundle\Mock\Entity'
 
 image_converter:
-  media_uploads_path: "%kernel.project_dir%/public/uploads/media/"
+  media_uploads_path: "%kernel.project_dir%/tests/uploads/media/"
   namer: "default" # Possible values : "default", "uuid", "mixed"
   quality: 80
-  public_path: "/public/uploads/media/"
+  public_path: "/tests/uploads/media/"
   keep_original: true
   delete_orphans: true
