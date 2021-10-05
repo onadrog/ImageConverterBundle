@@ -20,6 +20,7 @@ use Symfony\Component\Uid\Uuid;
 final class ImageUtils
 {
     public const CACHE_KEY = 'image_converter_cache_key';
+    public const ENTITY_CACHE_KEY = 'imc_entity_cache_key';
 
     /**
      * Create a GdImage to be converted by imagewebp func.

@@ -1,0 +1,46 @@
+<link rel="stylesheet" href="{{ asset('/bundles/imageconverter/imc_modal_style.css') }}">
+
+<span class="imc-close">X</span>
+<div class="imc-choices">
+	{%- for fields in form -%}
+		{%- if (fields.vars.name is not same as 'original_file' and fields.vars.block_prefixes[1] is not same as 'hidden') and fields.vars.attr is not empty and fields.vars.attr['data-name'] is not same as 'alt'-%}
+			{{- form_row(fields) -}}
+		{%- endif -%}
+	{%- endfor -%}
+
+	{%- for item in value -%}
+		{%- if attribute(item, props.mimeTypes)|length > 1 -%}
+			<label for="{{ item.id }}">
+				<input type="radio" name="image_selection" id="{{ item.id }}" value={{item.id}} data-alt="{{attribute(item, props.alt)}}">
+				<picture>
+					{%- for prop in attribute(item, props.mimeTypes) -%}
+						{%- if prop is same as "webp" -%}
+							<source srcset="{{attribute(item, props.slug)}}.{{prop}}" type="image/{{prop}}">
+						{%- else -%}
+							<img src="{{attribute(item, props.slug)}}.{{prop}}" alt="{{attribute(item, props.alt)}}" height="150" width="92" loading="lazy" class="imc-img">
+						{%- endif -%}
+					{%- endfor -%}
+				</picture>
+			</label>
+		{%- else -%}
+			<label for="{{ item.id }}">
+				<input type="radio" name="image_selection" id="{{ item.id }}" value={{item.id}} data-alt="{{attribute(item, props.alt)}}">
+				<img src="{{attribute(item, props.slug)}}.{{attribute(item, props.mimeTypes)|join()}}" alt="{{attribute(item, props.alt)}}" height="150" width="92" loading="lazy" class="imc-img">
+			</label>
+		{%- endif -%}
+	{%- endfor -%}
+</div>
+<div class="imc-inputs">
+	{%- for fields in form -%}
+		{%- if (fields.vars.name is not same as 'original_file' and fields.vars.block_prefixes[1] is not same as 'hidden') and fields.vars.attr is not empty and fields.vars.attr['data-name'] is same as 'alt'-%}
+			{{- form_row(fields) -}}
+		{%- endif -%}
+		{%- if (fields.vars.name is not same as 'original_file') and fields.vars.attr is not empty and fields.vars.attr["class"] is defined -%}
+			{{- form_row(fields) -}}
+		{%- endif -%}
+	{%- endfor -%}
+	<div class="imc-form">
+		<input type="button" value="Save" class="imc-modal-save">
+		<input type="button" value="Cancel" class="imc-modal-cancel">
+	</div>
+</div>

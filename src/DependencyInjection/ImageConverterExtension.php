@@ -18,7 +18,7 @@ class ImageConverterExtension extends Extension
         $configs = $this->processConfiguration($configuration, $configs);
         $loader = new XmlFileLoader($container, new FileLocator(dirname(__DIR__, 2).'/config'));
         $files = [
-            'mapping.xml', 'subscriber.xml', 'twig.xml', 'type.xml', 'utils.xml', 'command.xml',
+            'mapping.xml', 'subscriber.xml', 'twig.xml', 'type.xml', 'utils.xml', 'command.xml', 'controller.xml',
         ];
         foreach ($files as $loads) {
             $loader->load($loads);

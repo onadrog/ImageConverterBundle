@@ -69,6 +69,7 @@ class ImageConverterSubscriber implements EventSubscriberInterface
 
         $dimension = ['height' => $imageHeight, 'width' => $imageWidth];
 
+        // Save original file
         if ($this->config['keep_original'] && !$this->config['use_js']) {
             $name = $slug['safename'].'.'.$image->guessExtension();
             $temp = tempnam('/tmp', 'foo');
@@ -77,7 +78,8 @@ class ImageConverterSubscriber implements EventSubscriberInterface
             $original_copy = new File($temp);
             $original_copy->originalName = $name;
             $data['original_file'] = $original_copy;
-        } else {
+        }
+        if ($this->config['keep_original'] && $this->config['use_js']) {
             /** @var UploadedFile */
             $original = $data['original_file'];
             $file = new File($original->getPathname());
@@ -86,6 +88,7 @@ class ImageConverterSubscriber implements EventSubscriberInterface
             $data['original_file'] = $file;
             array_push($mimeTypes, $original->guessExtension());
         }
+
         // Point of no return. At this point the image become a webp file
         if (!empty(get_extension_funcs('gd')) && !$this->config['use_js'] && !$isWebp) {
             $callFunction = $this->imageUtils->createGdImg($image->guessExtension(), $imagePath);
@@ -149,6 +152,7 @@ class ImageConverterSubscriber implements EventSubscriberInterface
                 'required' => false,
                 'data_class' => null,
                 'attr' => ['data-name' => 'alt'],
+                'row_attr' => ['class' => 'imc-alt'],
             ])
             ->add($attributes['mimeTypes'], HiddenType::class, ['mapped' => true,
              'data_class' => null,
@@ -156,7 +160,6 @@ class ImageConverterSubscriber implements EventSubscriberInterface
              ])
             ->add('image_converter', FileType::class, [
                 'multiple' => false,
-                'label' => false,
                 'mapped' => false,
                 'required' => false,
                 'error_bubbling' => true,
@@ -168,10 +171,18 @@ class ImageConverterSubscriber implements EventSubscriberInterface
                     'accept' => 'image/*',
                     'data-prop' => $attributes['property'],
                 ],
+                'label_attr' => ['class' => 'imc-label'],
+                'row_attr' => ['class' => 'imc-input'],
             ]);
 
         if ($this->config['keep_original']) {
             $form->add('original_file', FileType::class, ['mapped' => false, 'required' => false, 'multiple' => false]);
+        }
+        if ($attributes['relation']) {
+            $form->add('entity_value', HiddenType::class, [
+                'mapped' => false,
+                'attr' => ['class' => 'entity_value'],
+            ]);
         }
     }
 
@@ -188,6 +199,7 @@ class ImageConverterSubscriber implements EventSubscriberInterface
         $this->cache->deleteItem(self::NAME_VAL);
         $key = $form->get($prop['name'])->getData();
         $this->cache->deleteItem(ImageUtils::CACHE_KEY);
+        $this->cache->deleteItem(ImageUtils::ENTITY_CACHE_KEY);
         $image = $form->get('image_converter')->getData();
         if ($form->isSubmitted() && $form->isValid() && $image) {
             $path = $this->imageUtils->strAppendSlash($this->config['media_uploads_path']);

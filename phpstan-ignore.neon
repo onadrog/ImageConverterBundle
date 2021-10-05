@@ -6,5 +6,6 @@ parameters:
         - '#Match expression does not handle remaining value: mixed#'
         - '#Call to function is_string\(\) with Symfony\\Bundle\\MakerBundle\\Util\\ClassSourceManipulator will always evaluate to false.#'
         - '#Access to an undefined property Symfony\\Component\\HttpFoundation\\File\\File::\$originalName.#'
+        - '#Unable to resolve the template type T in call to method Doctrine\\ORM\\EntityManagerInterface::getRepository\(\)#'
     excludePaths:
         - src/Command/Skeleton/*

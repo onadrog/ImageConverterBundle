@@ -1,0 +1,27 @@
+{%- block onadrog_image_converter_widget -%}
+
+{%- if form is rootform -%}
+	{{ form_errors(form) }}
+{%- endif -%}
+{%- if image_url is not null -%}
+	<img src="{{ image_url }}" width="{{ width }}" height="{{ height }}"/>
+{%- endif -%}
+{%- if entity -%}
+	<image-converter-modal>
+		<input type="button" value="add {{ entity|capitalize }}" id="imc-openModal">
+		<div class="imc-modal" id="imc-modal-fields" style="display: none;">
+			{% include "@ImageConverter/form/modal.html.twig" with {'value':value, 'props':props, 'form': form} %}
+		</div>
+	</image-converter-modal>
+	<script src="{{asset('/bundles/imageconverter/imc_modal.js')}}"></script>
+
+{%- else -%}
+	{%- for fields in form -%}
+		{%- if (fields.vars.name is not same as 'original_file' and fields.vars.block_prefixes[1] is not same as 'hidden') -%}
+			{{- form_row(fields) -}}
+		{%- endif -%}
+	{%- endfor -%}
+{%- endif -%}
+{%- if use_js -%}
+	<script src="{{asset('/bundles/imageconverter/imc_image_converter.js')}}"></script>
+{%- endif -%}{%- endblock -%}

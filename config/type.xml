@@ -9,6 +9,7 @@
             <tag name="form.twig"/>
             <argument type="service" id="image_converter.subscriber"/>
             <argument key="$config">%image_converter%</argument>
+            <argument type="service" id="image_converter.controller" key="$entityController"/>
         </service>
     </services>
 </container>

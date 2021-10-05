@@ -2,6 +2,7 @@
 
 namespace Onadrog\ImageConverterBundle\Form\Type;
 
+use Onadrog\ImageConverterBundle\Controller\EntityController;
 use Onadrog\ImageConverterBundle\EventSubscriber\ImageConverterSubscriber;
 use Onadrog\ImageConverterBundle\Service\ImageUtils;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
@@ -23,7 +24,8 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
         private ImageConverterSubscriber $imageConverterSubscriber,
         private PropertyAccessorInterface $propertyAccessor,
         private AdapterInterface $cache,
-        private array $config
+        private array $config,
+        private EntityController $entityController,
     ) {
     }
 
@@ -36,7 +38,7 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
 
     public function getBlockPrefix()
     {
-        return 'image_converter';
+        return 'onadrog_image_converter';
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -47,7 +49,6 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $props = $this->cache->getItem(ImageUtils::CACHE_KEY)->get();
-
         $imgUrl = null;
         $data = null;
         if ($form['image_converter']->getConfig()->getOption('attr')['data-relation']) {
@@ -73,6 +74,18 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
                 $view->vars['original'] = true;
             }
         }
+
+        $entities = $this->entityController->getEntity($props['entity']);
+        $cache_entity = $this->cache->getItem(ImageUtils::ENTITY_CACHE_KEY);
+        $cache_entity->set($entities);
+        $this->cache->save($cache_entity);
+
+        $view->vars['entity'] = null;
+        if ($props['relation']) {
+            $view->vars['entity'] = $form->getName();
+            $view->vars['value'] = $this->entityController->getEntity($props['entity']);
+            $view->vars['props'] = $props;
+        }
         $view->vars['use_js'] = $this->config['use_js'];
         $view->vars['image_url'] = $imgUrl;
     }
@@ -91,7 +104,7 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
             return;
         }
         foreach ($form as $f) {
-            if ('image_converter' !== $f->getName() && 'original_file' !== $f->getName()) {
+            if ('image_converter' !== $f->getName() && 'original_file' !== $f->getName() && 'entity_value' !== $f->getName()) {
                 if (
                     isset($f->getConfig()->getOption('attr')['data-type']) &&
                     'json_array' === $f->getConfig()->getOption('attr')['data-type']
@@ -117,22 +130,33 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
             $viewData = $form['image_converter']->getRoot()->getData();
         }
 
-        foreach ($form as $f) {
-            if ('image_converter' !== $f->getName() && 'original_file' !== $f->getName()) {
-                if (
+        //dd($viewData);
+        if ($form['image_converter']->getData()) {
+            foreach ($form as $f) {
+                if ('image_converter' !== $f->getName() && 'original_file' !== $f->getName()) {
+                    if (
                     isset($f->getConfig()->getOption('attr')['data-type']) &&
                     'json_array' === $f->getConfig()->getOption('attr')['data-type']
                     ) {
-                    $dataAtrtributes = $f->getConfig()->getOption('attr')['data-prop'];
-                    $data = json_decode($f->getData(), true);
-                    if ('dimension' === $dataAtrtributes) {
-                        $this->propertyAccessor->setValue($viewData, $f->getName(), $data['dimension']);
+                        $dataAtrtributes = $f->getConfig()->getOption('attr')['data-prop'];
+                        $data = json_decode($f->getData(), true);
+                        if ('dimension' === $dataAtrtributes) {
+                            $this->propertyAccessor->setValue($viewData, $f->getName(), $data['dimension']);
+                        }
+                        if ('mimes' === $dataAtrtributes) {
+                            $this->propertyAccessor->setValue($viewData, $f->getName(), $data['mimes']);
+                        }
+                    } else {
+                        $this->propertyAccessor->setValue($viewData, $f->getName(), $f->getData());
                     }
-                    if ('mimes' === $dataAtrtributes) {
-                        $this->propertyAccessor->setValue($viewData, $f->getName(), $data['mimes']);
-                    }
-                } else {
-                    $this->propertyAccessor->setValue($viewData, $f->getName(), $f->getData());
+                }
+            }
+        }
+        if (isset($form['entity_value']) && null !== $form['entity_value']->getData()) {
+            $entities = $this->cache->getItem(ImageUtils::ENTITY_CACHE_KEY)->get();
+            foreach ($entities as $item) {
+                if ($form['entity_value']->getData() === $this->propertyAccessor->getValue($item, 'id')) {
+                    $viewData = $item;
                 }
             }
         }

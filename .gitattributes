@@ -10,3 +10,4 @@
 /packages.json export-ignore
 /webpack.config.js export-ignore
 /assets export-ignore
+/postcss.config.js export-ignore
