@@ -133,7 +133,7 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
         //dd($viewData);
         if ($form['image_converter']->getData()) {
             foreach ($form as $f) {
-                if ('image_converter' !== $f->getName() && 'original_file' !== $f->getName()) {
+                if ('image_converter' !== $f->getName() && 'original_file' !== $f->getName() && 'entity_value' !== $f->getName()) {
                     if (
                     isset($f->getConfig()->getOption('attr')['data-type']) &&
                     'json_array' === $f->getConfig()->getOption('attr')['data-type']

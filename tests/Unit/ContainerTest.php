@@ -37,7 +37,7 @@ class ContainerTest extends KernelTestCase
         $this->assertTrue($param);
         $container = self::geKernelContainer()->getParameter('twig.form.resources');
         $this->assertIsArray($container);
-        $this->assertContains('@ImageConverter/fields.html.twig', $container);
+        $this->assertContains('@ImageConverter/form/fields.html.twig', $container);
     }
 
     /**
