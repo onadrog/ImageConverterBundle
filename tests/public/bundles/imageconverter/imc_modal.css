@@ -1,0 +1,208 @@
+/*!**********************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[1].use[3]!./assets/css/modal.scss ***!
+  \**********************************************************************************************************************************************************************************************************************************************/
+:root {
+  --imc-primary: #181394;
+  --imc-secondary: #e3c456;
+  --imc-bg: #f8f8f8;
+  --imc-bradius: 10px;
+}
+
+.imc-open {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  display: flex;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  left: 0;
+}
+
+.imc-modal {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(10px, 20px) 7fr minmax(10px, 20px) 2fr minmax(10px, 20px);
+  grid-gap: 1rem;
+  grid-template-rows: 0.5fr 5fr 0.5fr;
+  width: 75vw;
+  height: 75vh;
+  background-color: var(--imc-bg);
+  border-radius: 10px;
+  margin: auto;
+  box-shadow: 0px 3px 0px 1px var(--imc-secondary);
+  grid-template-areas: "x . . . ." ". images . inputs .";
+}
+.imc-modal input[data-name=alt],
+.imc-modal input[data-name=image_converter] {
+  border-radius: var(--imc-bradius);
+  border: solid rgba(24, 19, 148, 0.5);
+}
+
+.imc-close {
+  grid-area: x;
+  padding: 0.4rem;
+  color: rgba(24, 19, 148, 0.5);
+  cursor: pointer;
+  height: -webkit-max-content;
+  height: -moz-max-content;
+  height: max-content;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.imc-choices {
+  position: relative;
+  grid-area: images;
+  margin: 5px 5px;
+  display: grid;
+  gap: 0.3rem;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  grid-auto-rows: -webkit-max-content;
+  grid-auto-rows: max-content;
+  overflow-y: scroll;
+  overflow-x: visible;
+  scrollbar-width: none;
+  justify-items: center;
+}
+.imc-choices input {
+  position: absolute;
+  right: 5px;
+  z-index: 1;
+}
+.imc-choices input:checked ~ * .imc-img {
+  filter: grayscale(0%);
+}
+.imc-choices input:checked ~ .imc-img {
+  filter: grayscale(0%);
+}
+.imc-choices label {
+  cursor: pointer;
+  position: relative;
+}
+.imc-choices label:not(.imc-label) {
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
+.imc-input {
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+}
+
+.imc-label {
+  display: flex;
+  box-sizing: border-box;
+  font-weight: bold;
+  height: 150px;
+  width: 92px;
+  font-size: 0;
+  justify-content: center;
+  align-items: center;
+  visibility: visible;
+  border: dashed 0.5rem rgba(24, 19, 148, 0.5);
+  color: rgba(24, 19, 148, 0.5);
+  border-radius: var(--imc-bradius);
+  background-color: #fff;
+}
+.imc-label::before {
+  font-size: 5rem;
+  content: "+";
+}
+
+input[data-name=image_converter] {
+  visibility: hidden;
+}
+
+.imc-inputs {
+  grid-area: inputs;
+  display: grid;
+}
+
+.imc-alt label {
+  display: block;
+}
+.imc-alt input:disabled {
+  background-color: rgba(0, 0, 0, 0.1);
+  border: solid rgba(24, 19, 148, 0.3);
+}
+
+.imc-img {
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: var(--imc-bradius);
+  filter: grayscale(100%);
+}
+.imc-img:hover {
+  filter: grayscale(25%);
+}
+
+-ms-overflow-style {
+  width: 0;
+}
+
+@media (max-width: 960px) {
+  .imc-label {
+    border: dashed 0.4rem rgba(24, 19, 148, 0.5);
+  }
+  .imc-label::before {
+    font-size: 4rem;
+  }
+
+  .imc-modal {
+    display: grid;
+    grid-template-columns: minmax(5px, 10px) 5fr minmax(5px, 10px);
+    grid-gap: 1rem;
+    grid-template-rows: 0.5fr 9fr 2fr 0.5fr;
+    width: 75vw;
+    height: 75vh;
+    background-color: var(--imc-bg);
+    border-radius: 10px;
+    margin: auto;
+    box-shadow: 0px 3px 0px 1px var(--imc-secondary);
+    grid-template-areas: "x . ." ". images ." ". inputs ." ". . .";
+  }
+
+  .imc-alt input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+.imc-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 20px;
+  -moz-column-gap: 20px;
+       column-gap: 20px;
+  align-items: end;
+}
+.imc-form .imc-modal-cancel,
+.imc-form .imc-modal-save {
+  font-weight: bold;
+  font-size: 1.5rem;
+  border-radius: var(--imc-bradius);
+  cursor: pointer;
+  padding: 1rem;
+}
+.imc-form .imc-modal-cancel {
+  border-radius: var(--imc-bradius);
+  color: var(--imc-secondary);
+  border: solid 2px var(--imc-secondary);
+}
+.imc-form .imc-modal-save {
+  background-color: var(--imc-primary);
+  border: none;
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+}
+
+input.imc-open {
+  display: none;
+}

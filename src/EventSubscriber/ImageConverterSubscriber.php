@@ -3,6 +3,7 @@
 namespace Onadrog\ImageConverterBundle\EventSubscriber;
 
 use Onadrog\ImageConverterBundle\Service\ImageUtils;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -179,9 +180,12 @@ class ImageConverterSubscriber implements EventSubscriberInterface
             $form->add('original_file', FileType::class, ['mapped' => false, 'required' => false, 'multiple' => false]);
         }
         if ($attributes['relation']) {
-            $form->add('entity_value', HiddenType::class, [
+            $form->add('entity_value', EntityType::class, [
                 'mapped' => false,
                 'attr' => ['class' => 'entity_value'],
+                'class' => $attributes['entity'],
+                'choice_label' => 'id',
+                'row_attr' => ['hidden' => true],
             ]);
         }
     }

@@ -7,6 +7,8 @@ interface ImageConverterModal {
   radioInputs: NodeList;
   altInput: HTMLInputElement;
   entityInput: HTMLInputElement;
+  label: HTMLLabelElement;
+  fileInput: HTMLInputElement;
 }
 
 class ImageConverterModal extends HTMLElement {
@@ -20,6 +22,8 @@ class ImageConverterModal extends HTMLElement {
     this.radioInputs = this.querySelectorAll("input[type='radio']");
     this.altInput = this.querySelector("input[data-name='alt']");
     this.entityInput = this.querySelector(".entity_value");
+    this.label = this.querySelector(".imc-label");
+    this.fileInput = this.querySelector("input[data-name='image_converter']");
     this.init();
   }
 
@@ -30,7 +34,8 @@ class ImageConverterModal extends HTMLElement {
       this.openModalInput.className += "imc-open";
       this.closeEvt();
       this.cancelEvt();
-      this.radioEvnt();
+      this.radioEvt();
+      this.fileEvt();
     });
   }
 
@@ -55,10 +60,11 @@ class ImageConverterModal extends HTMLElement {
       });
       this.altInput.removeAttribute("disabled");
       this.entityInput.removeAttribute("value");
+      this.label.removeAttribute("style");
     });
   };
 
-  radioEvnt = () => {
+  radioEvt = () => {
     this.radioInputs.forEach((radio) => {
       radio.addEventListener("change", (e) => {
         const target = <HTMLInputElement>e.target;
@@ -66,6 +72,24 @@ class ImageConverterModal extends HTMLElement {
         this.altInput.value = target.dataset.alt;
         this.entityInput.value = target.value;
       });
+    });
+  };
+
+  fileEvt = () => {
+    const image = new Image();
+    this.fileInput.addEventListener("change", (e) => {
+      const file = (e.target as HTMLInputElement).files[0];
+      const styleLabel = this.label.style;
+      const url = URL.createObjectURL(file);
+      image.src = url;
+      image.onload = (e) => {
+        URL.revokeObjectURL((e.target as HTMLImageElement).src);
+      };
+      styleLabel.backgroundImage = "url(" + url + ")";
+      styleLabel.backgroundPosition = "center";
+      styleLabel.backgroundSize = "cover";
+      styleLabel.backgroundRepeat = "no-repeat";
+      styleLabel.border = "none";
     });
   };
 }

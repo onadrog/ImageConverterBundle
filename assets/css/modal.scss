@@ -1,9 +1,27 @@
+@use "sass:map";
 // ------------------ VARS ------------------
 
-$imc-primary: #181394;
-$imc-secondary: #e3c456;
-$imc-bg: #f8f8f8;
-$imc-bradius: 5px;
+$vars: (
+  "imc-primary": #181394,
+  "imc-secondary": #e3c456,
+  "imc-bg": #f8f8f8,
+  "imc-bradius": 5px,
+);
+
+:root {
+  @each $args, $value in $vars {
+    --#{$args}: #{$value};
+  }
+}
+
+@function v($var) {
+  @return var(--#{$var});
+}
+
+@function transp($arg, $opacity) {
+  $_var: map-get($vars, $arg);
+  @return rgba($_var, $opacity);
+}
 
 // ------------------------------------------
 
@@ -28,24 +46,24 @@ $imc-bradius: 5px;
   grid-template-rows: 0.5fr 5fr 0.5fr;
   width: 75vw;
   height: 75vh;
-  background-color: $imc-bg;
+  background-color: v(imc-bg);
   border-radius: 10px;
   margin: auto;
-  box-shadow: 0px 3px 0px 1px $imc-secondary;
+  box-shadow: 0px 3px 0px 1px v(imc-secondary);
   grid-template-areas:
     "x . . . ."
     ". images . inputs .";
   & input[data-name="alt"],
   input[data-name="image_converter"] {
-    border-radius: $imc-bradius;
-    border: solid rgba($imc-primary, 0.5);
+    border-radius: v(imc-bradius);
+    border: solid transp(imc-primary, 0.5);
   }
 }
 
 .imc-close {
   grid-area: x;
   padding: 0.4rem;
-  color: rgba($imc-primary, 0.5);
+  color: transp(imc-primary, 0.5);
   cursor: pointer;
   height: max-content;
   font-size: 1.1rem;
@@ -98,9 +116,9 @@ $imc-bradius: 5px;
   justify-content: center;
   align-items: center;
   visibility: visible;
-  border: dashed 0.5rem rgba($imc-primary, 0.5);
-  color: rgba($imc-primary, 0.5);
-  border-radius: $imc-bradius;
+  border: dashed 0.5rem transp(imc-primary, 0.5);
+  color: transp(imc-primary, 0.5);
+  border-radius: v(imc-bradius);
   background-color: #fff;
   &::before {
     font-size: 5rem;
@@ -121,12 +139,12 @@ input[data-name="image_converter"] {
   }
   & input:disabled {
     background-color: rgba(#000000, 0.1);
-    border: solid rgba($imc-primary, 0.3);
+    border: solid transp(imc-primary, 0.3);
   }
 }
 .imc-img {
   object-fit: cover;
-  border-radius: $imc-bradius;
+  border-radius: v(imc-bradius);
   filter: grayscale(100%);
   &:hover {
     filter: grayscale(25%);
@@ -151,10 +169,10 @@ input[data-name="image_converter"] {
     grid-template-rows: 0.5fr 9fr 2fr 0.5fr;
     width: 75vw;
     height: 75vh;
-    background-color: $imc-bg;
+    background-color: v(imc-bg);
     border-radius: 10px;
     margin: auto;
-    box-shadow: 0px 3px 0px 1px $imc-secondary;
+    box-shadow: 0px 3px 0px 1px v(imc-secondary);
     grid-template-areas:
       "x . ."
       ". images ."
@@ -179,17 +197,17 @@ input[data-name="image_converter"] {
   .imc-modal-save {
     font-weight: bold;
     font-size: 1.5rem;
-    border-radius: $imc-bradius;
+    border-radius: v(imc-bradius);
     cursor: pointer;
     padding: 1rem;
   }
   .imc-modal-cancel {
-    border-radius: $imc-bradius;
-    color: $imc-secondary;
-    border: solid 2px $imc-secondary;
+    border-radius: v(imc-bradius);
+    color: v(imc-secondary);
+    border: solid 2px v(imc-secondary);
   }
   .imc-modal-save {
-    background-color: $imc-primary;
+    background-color: v(imc-primary);
     border: none;
 
     color: #fff;

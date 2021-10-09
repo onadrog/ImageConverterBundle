@@ -34,7 +34,6 @@ input.addEventListener("change", (e) => {
   const url = URL.createObjectURL(file);
   newImg.src = url;
   newImg.onload = () => {
-    console.log(newImg.height);
     URL.revokeObjectURL(url);
     newcanvas.width = newImg.width;
     newcanvas.height = newImg.height;
@@ -67,7 +66,6 @@ const convertfile = (
   fileName: string,
   quality: number,
   input: HTMLInputElement,
-  file: File
 ) => {
   const dataURI = newcanvas.toDataURL("image/webp", quality);
   const blob = new Blob([dataURI]);
@@ -75,7 +73,6 @@ const convertfile = (
     type: "image/webp",
     lastModified: new Date().getTime(),
   });
-  console.log(newfile);
   let container = new DataTransfer();
   container.items.add(newfile);
   input.files = container.files;

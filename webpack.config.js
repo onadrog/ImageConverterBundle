@@ -34,8 +34,7 @@ let config = {
   },
   entry: {
     image_converter: "./assets/js/image_converter.ts",
-    modal: "./assets/js/modal.ts",
-    modal_style: "./assets/css/modal.scss",
+    modal: ["./assets/js/modal.ts", "./assets/css/modal.scss"],
   },
   output: {
     path: resolve(__dirname, "public"),

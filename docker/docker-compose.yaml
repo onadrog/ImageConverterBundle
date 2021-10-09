@@ -9,3 +9,6 @@ services:
     volumes:
       - ../:/var/www/html
       - ./php/php.ini:/usr/local/etc/php/php.ini
+    network_mode: host
+    ports:
+      - 9000:9000

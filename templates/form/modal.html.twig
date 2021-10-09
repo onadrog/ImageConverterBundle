@@ -1,9 +1,9 @@
-<link rel="stylesheet" href="{{ asset('/bundles/imageconverter/imc_modal_style.css') }}">
+<link rel="stylesheet" href="{{ asset('/bundles/imageconverter/imc_modal.css') }}">
 
 <span class="imc-close">X</span>
 <div class="imc-choices">
 	{%- for fields in form -%}
-		{%- if (fields.vars.name is not same as 'original_file' and fields.vars.block_prefixes[1] is not same as 'hidden') and fields.vars.attr is not empty and fields.vars.attr['data-name'] is not same as 'alt'-%}
+		{%- if (fields.vars.name is not same as 'original_file' and fields.vars.block_prefixes[1] is not same as 'hidden') and (fields.vars.attr is not empty and fields.vars.attr['data-name'] is defined) and (fields.vars.attr['data-name'] is not same as 'alt')-%}
 			{{- form_row(fields) -}}
 		{%- endif -%}
 	{%- endfor -%}
@@ -32,7 +32,7 @@
 </div>
 <div class="imc-inputs">
 	{%- for fields in form -%}
-		{%- if (fields.vars.name is not same as 'original_file' and fields.vars.block_prefixes[1] is not same as 'hidden') and fields.vars.attr is not empty and fields.vars.attr['data-name'] is same as 'alt'-%}
+{%-  if (fields.vars.name is not same as 'original_file' and fields.vars.block_prefixes[1] is not same as 'hidden') and (fields.vars.attr is not empty and fields.vars.attr['data-name'] is defined) and (fields.vars.attr['data-name'] is same as 'alt')-%}
 			{{- form_row(fields) -}}
 		{%- endif -%}
 		{%- if (fields.vars.name is not same as 'original_file') and fields.vars.attr is not empty and fields.vars.attr["class"] is defined -%}
@@ -40,7 +40,7 @@
 		{%- endif -%}
 	{%- endfor -%}
 	<div class="imc-form">
-		<input type="button" value="Save" class="imc-modal-save">
+		<input type="button" value="Add" class="imc-modal-save">
 		<input type="button" value="Cancel" class="imc-modal-cancel">
 	</div>
 </div>

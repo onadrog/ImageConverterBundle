@@ -49,7 +49,9 @@
         "symfony/maker-bundle": "^1.33",
         "symfony/console": "^5.3",
         "symfony/http-kernel": "^5.3",
-        "symfony/browser-kit": "^5.3"
+        "symfony/browser-kit": "^5.3",
+        "symfony/panther": "^1.1",
+        "dbrekelmans/bdi": "^0.3.0"
     },
     "license": "GPL-3.0-or-later",
     "autoload": {

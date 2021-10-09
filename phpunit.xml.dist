@@ -8,6 +8,9 @@
         <server name="SHELL_VERBOSITY" value="1" />
         <server name="SYMFONY_PHPUNIT_VERSION" value="9.5" />
         <server name="KERNEL_CLASS" value="Onadrog\ImageConverterBundle\Tests\ImageConverterTestingKernel" />
+        <server name="PANTHER_NO_HEADLESS" value="1" />
+        <server name="PANTHER_WEB_SERVER_DIR" value="./tests/public/" />
+        <server name="PANTHER_NO_SANDBOX" value="1" />
     </php>
 
     <testsuites>
@@ -26,9 +29,9 @@
         <listener class="\Symfony\Bridge\PhpUnit\CoverageListener"/>
     </listeners>
     <!-- Run `composer require symfony/panther` before enabling this extension -->
-    <!--
+
     <extensions>
         <extension class="Symfony\Component\Panther\ServerExtension" />
     </extensions>
-    -->
+
 </phpunit>

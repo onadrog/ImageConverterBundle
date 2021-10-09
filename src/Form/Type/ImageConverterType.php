@@ -130,7 +130,6 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
             $viewData = $form['image_converter']->getRoot()->getData();
         }
 
-        //dd($viewData);
         if ($form['image_converter']->getData()) {
             foreach ($form as $f) {
                 if ('image_converter' !== $f->getName() && 'original_file' !== $f->getName() && 'entity_value' !== $f->getName()) {
@@ -153,12 +152,7 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
             }
         }
         if (isset($form['entity_value']) && null !== $form['entity_value']->getData()) {
-            $entities = $this->cache->getItem(ImageUtils::ENTITY_CACHE_KEY)->get();
-            foreach ($entities as $item) {
-                if ($form['entity_value']->getData() === $this->propertyAccessor->getValue($item, 'id')) {
-                    $viewData = $item;
-                }
-            }
+            $viewData = $form['entity_value']->getData();
         }
     }
 }
