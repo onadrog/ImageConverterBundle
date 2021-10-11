@@ -78,12 +78,13 @@ final class ImageUtils
         // ImageUpload Attribute not found on Entity
         if (empty($attribute)) {
             $prop = $Refclass->getProperty($property);
+            $many = str_contains($prop->getDocComment(), 'ManyToMany') || str_contains($prop->getDocComment(), 'OneToMany');
             $annotation = self::readProperty($prop);
             foreach ($annotation as $anno) {
                 if (isset($anno->targetEntity)) {
                     $v = $anno->targetEntity;
                     $prop = $anno->mappedBy ?? $anno->inversedBy;
-                    $array = self::readRelationalMapping($v, $prop, $property);
+                    $array = self::readRelationalMapping($v, $prop, $property, $many);
                 }
             }
         } else {
@@ -96,7 +97,7 @@ final class ImageUtils
     /**
      * Retrieve metadata attributes from relation mapping.
      */
-    private static function readRelationalMapping(string $class, string $property, string $form_property): array
+    private static function readRelationalMapping(string $class, string $property, string $form_property, bool $many): array
     {
         $target = new ReflectionClass($class);
         if (!$target->getAttributes(ImageUpload::class)) {
@@ -115,6 +116,7 @@ final class ImageUtils
             'property' => $property,
             'entity' => $target->name,
             'relation' => true,
+            'multiple' => $many,
         ];
         foreach ($arguments as $arg) {
             $argsArray = array_merge($argsArray, $arg->getArguments());

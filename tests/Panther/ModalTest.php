@@ -38,7 +38,7 @@ class ModalTest extends PantherTestCase
         $client->getWebDriver()->findElement(WebDriverBy::id('imc-openModal'))->click();
         $client->waitForVisibility('#imc-modal-fields', 2);
         $this->assertSelectorIsVisible('#imc-modal-fields');
-        $client->getWebDriver()->findElement(WebDriverBy::name('image_selection'))->click();
+        $client->getWebDriver()->findElement(WebDriverBy::cssSelector("input[value='1']"))->click();
         $client->getWebDriver()->findElement(WebDriverBy::className('imc-modal-save'))->click();
         $client->waitForInvisibility('#imc-modal-fields', 2);
         $form = $crawler->selectButton('Save')->form(['mock[name]' => 'test']);

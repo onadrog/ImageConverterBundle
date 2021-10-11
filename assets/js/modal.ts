@@ -6,7 +6,7 @@ interface ImageConverterModal {
   cancelBtn: HTMLInputElement;
   radioInputs: NodeList;
   altInput: HTMLInputElement;
-  entityInput: HTMLInputElement;
+  entityInput: any;
   label: HTMLLabelElement;
   fileInput: HTMLInputElement;
 }
@@ -34,7 +34,7 @@ class ImageConverterModal extends HTMLElement {
       this.openModalInput.className += "imc-open";
       this.closeEvt();
       this.cancelEvt();
-      this.radioEvt();
+      if (this.radioInputs) this.radioEvt();
       this.fileEvt();
     });
   }
@@ -59,7 +59,6 @@ class ImageConverterModal extends HTMLElement {
         }
       });
       this.altInput.removeAttribute("disabled");
-      this.entityInput.removeAttribute("value");
       this.label.removeAttribute("style");
     });
   };
@@ -70,7 +69,6 @@ class ImageConverterModal extends HTMLElement {
         const target = <HTMLInputElement>e.target;
         this.altInput.disabled = true;
         this.altInput.value = target.dataset.alt;
-        this.entityInput.value = target.value;
       });
     });
   };

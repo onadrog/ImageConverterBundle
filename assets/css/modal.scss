@@ -1,5 +1,5 @@
 @use "sass:map";
-// ------------------ VARS ------------------
+// ------------------ VARS ------------------ \\
 
 $vars: (
   "imc-primary": #181394,
@@ -23,8 +23,17 @@ $vars: (
   @return rgba($_var, $opacity);
 }
 
-// ------------------------------------------
+// ------------------STYLE------------------ \\
 
+// ------------- Modal Close ------------- \\
+
+// Add entity btn
+input.imc-open {
+  display: none;
+}
+// ------------- Modal Open ------------- \\
+
+// Background fullpage opacity
 .imc-open {
   width: 100vw;
   height: 100vh;
@@ -34,7 +43,7 @@ $vars: (
   background-color: rgba(0, 0, 0, 0.75);
   left: 0;
 }
-
+// --------- Base modal --------- \\
 .imc-modal {
   position: relative;
   display: grid;
@@ -60,6 +69,7 @@ $vars: (
   }
 }
 
+// X close span
 .imc-close {
   grid-area: x;
   padding: 0.4rem;
@@ -70,6 +80,7 @@ $vars: (
   font-weight: bold;
 }
 
+// ------------- images choices ------------- \\
 .imc-choices {
   position: relative;
   grid-area: images;
@@ -102,9 +113,13 @@ $vars: (
     width: fit-content;
   }
 }
-
-.imc-input {
-  height: fit-content;
+.imc-img {
+  object-fit: cover;
+  border-radius: v(imc-bradius);
+  filter: grayscale(100%);
+  &:hover {
+    filter: grayscale(25%);
+  }
 }
 .imc-label {
   display: flex;
@@ -125,6 +140,12 @@ $vars: (
     content: "+";
   }
 }
+
+// image_converter_input
+.imc-uploader-input {
+  height: fit-content;
+}
+
 input[data-name="image_converter"] {
   visibility: hidden;
 }
@@ -133,6 +154,7 @@ input[data-name="image_converter"] {
   display: grid;
 }
 
+// Alt ipnut
 .imc-alt {
   & label {
     display: block;
@@ -142,15 +164,39 @@ input[data-name="image_converter"] {
     border: solid transp(imc-primary, 0.3);
   }
 }
-.imc-img {
-  object-fit: cover;
-  border-radius: v(imc-bradius);
-  filter: grayscale(100%);
-  &:hover {
-    filter: grayscale(25%);
+
+// Add / cancel  inputs btn
+.imc-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 20px;
+  column-gap: 20px;
+  align-items: end;
+  .imc-modal-cancel,
+  .imc-modal-save {
+    font-weight: bold;
+    font-size: 1.5rem;
+    border-radius: v(imc-bradius);
+    cursor: pointer;
+    padding: 1rem;
+  }
+  .imc-modal-cancel {
+    border-radius: v(imc-bradius);
+    color: v(imc-secondary);
+    border: solid 2px v(imc-secondary);
+  }
+  .imc-modal-save {
+    background-color: v(imc-primary);
+    border: none;
+
+    color: #fff;
   }
 }
 
+// Scrollbar
+::-webkit-scrollbar {
+  width: 0;
+}
 -ms-overflow-style {
   width: 0;
 }
@@ -185,38 +231,4 @@ input[data-name="image_converter"] {
       box-sizing: border-box;
     }
   }
-}
-
-.imc-form {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  margin-top: 20px;
-  column-gap: 20px;
-  align-items: end;
-  .imc-modal-cancel,
-  .imc-modal-save {
-    font-weight: bold;
-    font-size: 1.5rem;
-    border-radius: v(imc-bradius);
-    cursor: pointer;
-    padding: 1rem;
-  }
-  .imc-modal-cancel {
-    border-radius: v(imc-bradius);
-    color: v(imc-secondary);
-    border: solid 2px v(imc-secondary);
-  }
-  .imc-modal-save {
-    background-color: v(imc-primary);
-    border: none;
-
-    color: #fff;
-  }
-}
-
-::-webkit-scrollbar {
-  width: 0;
-}
-input.imc-open {
-  display: none;
 }

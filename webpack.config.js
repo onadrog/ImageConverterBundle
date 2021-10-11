@@ -69,9 +69,16 @@ if (!dev) {
   };
   config.plugins = [
     new CleanWebpackPlugin(),
-    new MiniCssExtractPlugin({ filename: "[name].css" }),
+    new MiniCssExtractPlugin({ filename: "imc_[name].css" }),
     new CompressionPlugin({
+      algorithm: "gzip",
+      filename: "[path][base].gz",
+      test: /\.(js|css)$/,
+    }),
+    new CompressionPlugin({
+      filename: "[path][base].br",
       algorithm: "brotliCompress",
+      test: /\.(js|css)$/,
     }),
     new RemoveEmptyScriptsPlugin(),
   ];

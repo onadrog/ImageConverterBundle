@@ -11,5 +11,6 @@
             <argument key="$config">%image_converter%</argument>
             <argument type="service" id="image_converter.controller" key="$entityController"/>
         </service>
+        <service id="image_converter.choice_type" class="Onadrog\ImageConverterBundle\Form\Type\ImageChoiceType"/>
     </services>
 </container>

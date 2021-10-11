@@ -15,6 +15,7 @@ class ImageConverterCompilerPass implements CompilerPassInterface
         if ($container->hasParameter('twig.form.resources')) {
             $resources = $container->getParameter('twig.form.resources');
             array_push($resources, '@ImageConverter/form/fields.html.twig');
+            array_push($resources, '@ImageConverter/form/modal.html.twig');
             $container->setParameter('twig.form.resources', $resources);
         }
     }

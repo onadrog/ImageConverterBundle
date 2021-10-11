@@ -85,13 +85,24 @@ class ImageUploadProperties implements EventSubscriberInterface
         $prop = $ref->getProperties();
         $val = null;
         $array = [];
+        $class = $object;
         foreach ($prop as $p) {
             if (!empty($p->getAttributes(self::class))) {
-                $val = $p->getAttributes(self::class);
+                $val = $p->getAttributes(self::class)[0]->getArguments();
             }
         }
-        $mimes = $this->propertyAccessorInterface->getValue($object, $val[0]->getArguments()['mimeTypes']);
-        $name = $this->propertyAccessorInterface->getValue($object, $val[0]->getArguments()['name']);
+        // Relation Entity
+        if (null === $val) {
+            foreach ($prop as $p) {
+                $props = ImageUtils::guessMappedClass($object, $p->getName());
+                if (!empty($props)) {
+                    $val = $props;
+                }
+            }
+            $class = new $val['entity']();
+        }
+        $mimes = $this->propertyAccessorInterface->getValue($class, $val['mimeTypes']);
+        $name = $this->propertyAccessorInterface->getValue($class, $val['name']);
         foreach ($mimes as $item) {
             $file = str_replace('webp', $item, $name);
             array_push($array, $file);

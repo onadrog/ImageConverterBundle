@@ -83,7 +83,6 @@ class ImageConverterType extends AbstractType implements DataMapperInterface
         $view->vars['entity'] = null;
         if ($props['relation']) {
             $view->vars['entity'] = $form->getName();
-            $view->vars['value'] = $this->entityController->getEntity($props['entity']);
             $view->vars['props'] = $props;
         }
         $view->vars['use_js'] = $this->config['use_js'];

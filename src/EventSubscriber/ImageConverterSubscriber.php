@@ -2,8 +2,8 @@
 
 namespace Onadrog\ImageConverterBundle\EventSubscriber;
 
+use Onadrog\ImageConverterBundle\Form\Type\ImageChoiceType;
 use Onadrog\ImageConverterBundle\Service\ImageUtils;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -173,19 +173,21 @@ class ImageConverterSubscriber implements EventSubscriberInterface
                     'data-prop' => $attributes['property'],
                 ],
                 'label_attr' => ['class' => 'imc-label'],
-                'row_attr' => ['class' => 'imc-input'],
+                'row_attr' => ['class' => 'imc-uploader-input'],
             ]);
 
         if ($this->config['keep_original']) {
             $form->add('original_file', FileType::class, ['mapped' => false, 'required' => false, 'multiple' => false]);
         }
         if ($attributes['relation']) {
-            $form->add('entity_value', EntityType::class, [
+            $form->add('entity_value', ImageChoiceType::class, [
                 'mapped' => false,
                 'attr' => ['class' => 'entity_value'],
                 'class' => $attributes['entity'],
+                'multiple' => $attributes['multiple'],
+                'expanded' => $attributes['multiple'],
                 'choice_label' => 'id',
-                'row_attr' => ['hidden' => true],
+                'error_bubbling' => true,
             ]);
         }
     }
