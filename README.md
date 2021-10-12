@@ -13,6 +13,7 @@ Convert your images into WebP format using the symfony form Component and Doctri
 
 ```bash
 composer require onadrog/imageconverterbundle
+php bin/console asset:install
 ```
 
 ## Minimal configuration
@@ -44,7 +45,7 @@ class Foo
      * @ORM\Column(type="json")
      */
     private ?array $fileDimension = [];
-    
+
      /**
      * @ORM\Column(type="json")
      */
